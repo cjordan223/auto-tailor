@@ -1,117 +1,174 @@
 {
   "job_skills_ranked": [
     {
-      "token": "outsystems",
-      "canonical": "OutSystems",
-      "section": "Programming Languages",
-      "confidence": 1.0,
+      "token": "nessus",
+      "canonical": "Nessus",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "6+ months of hands-on experience with the OutSystems platform.",
-        "Assist in designing, developing, and deploying applications using OutSystems."
+        "Network penetration testing with tools such as Nessus, Nmap, Metasploit"
       ],
       "aliases": []
     },
     {
-      "token": "sql",
-      "canonical": "SQL",
-      "section": "Databases",
-      "confidence": 1.0,
+      "token": "nmap",
+      "canonical": "Nmap",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "Familiarity with relational databases and SQL."
+        "Network penetration testing with tools such as Nessus, Nmap, Metasploit"
       ],
       "aliases": []
     },
     {
-      "token": "html",
-      "canonical": "HTML",
-      "section": "Frontend",
-      "confidence": 1.0,
+      "token": "metasploit",
+      "canonical": "Metasploit",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "Understanding of web technologies (HTML, CSS, JavaScript)."
+        "Network penetration testing with tools such as Nessus, Nmap, Metasploit"
       ],
       "aliases": []
     },
     {
-      "token": "css",
-      "canonical": "CSS",
-      "section": "Frontend",
-      "confidence": 1.0,
+      "token": "burp suite pro",
+      "canonical": "Burp Suite Pro",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "Understanding of web technologies (HTML, CSS, JavaScript)."
+        "Web application testing including advanced usage of Burp Suite Pro"
       ],
       "aliases": []
     },
     {
-      "token": "javascript",
-      "canonical": "JavaScript",
-      "section": "Frontend",
-      "confidence": 1.0,
+      "token": "tcp/ip networking",
+      "canonical": "TCP/IP Networking",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "Understanding of web technologies (HTML, CSS, JavaScript)."
+        "TCP/IP networking and ability to troubleshoot connectivity issues"
       ],
       "aliases": []
     },
     {
-      "token": "rest",
-      "canonical": "REST",
-      "section": "Backend",
-      "confidence": 0.85,
+      "token": "penetration testing reports",
+      "canonical": "Penetration Testing Reports",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "Experience with REST and SOAP web services."
+        "Produce penetration testing reports based on testing results"
       ],
       "aliases": []
     },
     {
-      "token": "soap",
-      "canonical": "SOAP",
-      "section": "Backend",
-      "confidence": 0.85,
+      "token": "kali linux environment",
+      "canonical": "Kali Linux Environment",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
       "evidence": [
-        "Experience with REST and SOAP web services."
+        "Working knowledge of tools such as Burp Suite, Nessus, and the Kali Linux environment"
       ],
       "aliases": []
     },
     {
-      "token": "git",
-      "canonical": "Git",
+      "token": "cloud penetration testing",
+      "canonical": "Cloud Penetration Testing",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
+      "evidence": [
+        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "k8s",
+      "canonical": "Kubernetes (K8S)",
       "section": "Cloud & DevOps",
-      "confidence": 0.75,
+      "confidence": 0.95,
       "evidence": [
-        "Knowledge of version control systems (e.g., Git)."
+        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "aws",
+      "canonical": "AWS",
+      "section": "Cloud & DevOps",
+      "confidence": 0.95,
+      "evidence": [
+        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "azure",
+      "canonical": "Azure",
+      "section": "Cloud & DevOps",
+      "confidence": 0.95,
+      "evidence": [
+        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "dradis",
+      "canonical": "Dradis",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
+      "evidence": [
+        "Experience with Dradis a plus and knowledge of vulnerabilities and exploits"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "oscp",
+      "canonical": "OSCP (Offensive Security Certified Professional)",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
+      "evidence": [
+        "Required Certification: Offensive Security Certified Professional (OSCP)"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "gpen",
+      "canonical": "GPEN (GIAC Certified Penetration Tester)",
+      "section": "Security & Operating Systems",
+      "confidence": 0.95,
+      "evidence": [
+        "Desired Certifications: GPEN: GIAC Certified Penetration Tester"
       ],
       "aliases": []
     }
   ],
   "by_section_top3": {
-    "Programming Languages": [
-      "OutSystems"
-    ],
-    "Frontend": [
-      "HTML",
-      "CSS",
-      "JavaScript"
-    ],
-    "Backend": [
-      "REST",
-      "SOAP"
-    ],
+    "Programming Languages": [],
+    "Frontend": [],
+    "Backend": [],
     "Cloud & DevOps": [
-      "Git"
+      "Kubernetes (K8S)",
+      "AWS",
+      "Azure"
     ],
     "AI & LLM Tools": [],
-    "Security & Operating Systems": [],
-    "Databases": [
-      "SQL"
-    ]
+    "Automation & Productivity": [],
+    "Security & Operating Systems": [
+      "Nessus",
+      "Metasploit",
+      "Burp Suite Pro"
+    ],
+    "Databases": []
   },
   "skills_flat": [
-    "OutSystems",
-    "SQL",
-    "HTML",
-    "CSS",
-    "JavaScript",
-    "REST",
-    "SOAP",
-    "Git"
+    "Nessus",
+    "Nmap",
+    "Metasploit",
+    "Burp Suite Pro",
+    "TCP/IP Networking",
+    "Penetration Testing Reports",
+    "Kali Linux Environment",
+    "Cloud Penetration Testing",
+    "Kubernetes (K8S)",
+    "AWS"
   ]
 }

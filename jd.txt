@@ -1,33 +1,30 @@
-We are seeking a motivated Junior Software Engineer with experience in OutSystems to join our client's development team. This is an excellent opportunity for someone early in their career to deepen their expertise in low-code development while contributing to impactful projects across multiple industries. You’ll work closely with senior engineers, business analysts, and QA teams to deliver solutions that meet client needs.
+Software Engineer - Backend Development
 
+We are looking for a talented Software Engineer to join our backend development team. You will be responsible for designing, developing, and maintaining scalable backend services and APIs.
 
-Key Responsibilities
+Required Qualifications:
+- Strong grasp of computer science fundamentals
+- Minimum of 2 years of industry experience in software development
+- Extensive experience with Databases, SQL, and data modeling
+- Proficiency in containerization technologies like Kubernetes and Docker
+- Experience with distributed systems and microservices architecture
+- Knowledge of streaming platforms like Apache Kafka
+- Experience with cloud platforms, particularly AWS
+- Familiarity with gRPC and RESTful API design
+- Experience with big data processing tools like Apache Spark
+- Strong programming skills in Python, Java, or Go
 
-    Assist in designing, developing, and deploying applications using OutSystems.
-    Collaborate with team members to translate business requirements into functional and technical designs.
-    Write clean, maintainable, and efficient code following best practices.
-    Configure integrations with external systems and APIs.
-    Participate in testing, debugging, and performance tuning of applications.
-    Document technical specifications, configurations, and deployment processes.
-    Support the maintenance and enhancement of existing applications.
+Preferred Qualifications:
+- Adaptability and ability to learn new technologies quickly
+- Strong logical reasoning and problem-solving skills
+- Detail-oriented approach to development
+- Contributions to open source projects
+- Strong performance in programming competitions
+- Enthusiasm for AI and machine learning technologies
 
-
-Requirements
-
-Essential:
-
-    6+ months of hands-on experience with the OutSystems platform.
-    Basic knowledge of software development principles, design patterns, and best practices.
-    Familiarity with relational databases and SQL.
-    Understanding of web technologies (HTML, CSS, JavaScript).
-    Strong problem-solving skills and attention to detail.
-    Ability to work collaboratively in a team environment.
-
-
-Desirable:
-
-    OutSystems Reactive Developer certification.
-    Exposure to Agile methodologies (Scrum/Kanban).
-    Experience with REST and SOAP web services.
-    Knowledge of version control systems (e.g., Git).
-
+Additional Requirements:
+- Capacity to adapt and learn new skills as technology evolves
+- Experience with CI/CD pipelines and DevOps practices
+- Knowledge of monitoring and logging tools
+- Understanding of security best practices
+- Experience with database optimization and performance tuning

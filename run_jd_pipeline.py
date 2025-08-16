@@ -100,6 +100,22 @@ def main():
     if not run_command(skills_cmd, "Skills Section Update"):
         sys.exit("❌ Pipeline failed at skills update step")
 
+    # Step 3: Run Summary Updater
+    summary_cmd = [
+        "python3", "summary-updater.py",
+        "--base-url", args.base_url,
+        "--api-key", args.api_key,
+        "--model", args.model
+    ]
+
+    if args.artifacts_only:
+        summary_cmd.append("--artifacts-only")
+    elif args.dry_run:
+        summary_cmd.append("--dry-run")
+
+    if not run_command(summary_cmd, "Summary Section Update"):
+        sys.exit("❌ Pipeline failed at summary update step")
+
     # Summary
     print(f"\n{'='*60}")
     print("🎉 PIPELINE COMPLETED SUCCESSFULLY!")

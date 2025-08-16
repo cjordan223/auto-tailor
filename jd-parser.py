@@ -51,6 +51,10 @@ SUBSECTIONS = [
 # SYSTEM PROMPT — JD → Skills Extractor (your WebUI version, verbatim)
 # -------------------
 JD_EXTRACTOR_SYSTEM = """
+# -------------------
+# SYSTEM PROMPT — JD → Skills Extractor (your WebUI version, verbatim)
+# -------------------
+JD_EXTRACTOR_SYSTEM = """
 You are a deterministic parser that extracts ATS-relevant skill tokens from a Job Description (JD) and maps them to résumé skill subsections.
 You must only use content explicitly present or unambiguously implied by the JD. No fabrication.
 
@@ -73,6 +77,8 @@ Output (ASSISTANT message)
 Return JSON only (no prose, no code fences), matching this schema:
 
 {
+  "key_responsibilities": ["string"],
+  "company_values": ["string"],
   "job_skills_ranked": [
     {
       "token": "string (as it appears or canonicalized, e.g., 'incident response')",
@@ -154,6 +160,7 @@ Forbidden behavior
 
 Validation
 - Every extracted item MUST include at least one evidence snippet that appears verbatim (case-insensitive) in the JD.
+"""
 """.strip()
 
 # -------------------
