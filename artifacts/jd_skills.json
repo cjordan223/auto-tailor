@@ -1,0 +1,117 @@
+{
+  "job_skills_ranked": [
+    {
+      "token": "outsystems",
+      "canonical": "OutSystems",
+      "section": "Programming Languages",
+      "confidence": 1.0,
+      "evidence": [
+        "6+ months of hands-on experience with the OutSystems platform.",
+        "Assist in designing, developing, and deploying applications using OutSystems."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "sql",
+      "canonical": "SQL",
+      "section": "Databases",
+      "confidence": 1.0,
+      "evidence": [
+        "Familiarity with relational databases and SQL."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "html",
+      "canonical": "HTML",
+      "section": "Frontend",
+      "confidence": 1.0,
+      "evidence": [
+        "Understanding of web technologies (HTML, CSS, JavaScript)."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "css",
+      "canonical": "CSS",
+      "section": "Frontend",
+      "confidence": 1.0,
+      "evidence": [
+        "Understanding of web technologies (HTML, CSS, JavaScript)."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "javascript",
+      "canonical": "JavaScript",
+      "section": "Frontend",
+      "confidence": 1.0,
+      "evidence": [
+        "Understanding of web technologies (HTML, CSS, JavaScript)."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "rest",
+      "canonical": "REST",
+      "section": "Backend",
+      "confidence": 0.85,
+      "evidence": [
+        "Experience with REST and SOAP web services."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "soap",
+      "canonical": "SOAP",
+      "section": "Backend",
+      "confidence": 0.85,
+      "evidence": [
+        "Experience with REST and SOAP web services."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "git",
+      "canonical": "Git",
+      "section": "Cloud & DevOps",
+      "confidence": 0.75,
+      "evidence": [
+        "Knowledge of version control systems (e.g., Git)."
+      ],
+      "aliases": []
+    }
+  ],
+  "by_section_top3": {
+    "Programming Languages": [
+      "OutSystems"
+    ],
+    "Frontend": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "Backend": [
+      "REST",
+      "SOAP"
+    ],
+    "Cloud & DevOps": [
+      "Git"
+    ],
+    "AI & LLM Tools": [],
+    "Security & Operating Systems": [],
+    "Databases": [
+      "SQL"
+    ]
+  },
+  "skills_flat": [
+    "OutSystems",
+    "SQL",
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "REST",
+    "SOAP",
+    "Git"
+  ]
+}

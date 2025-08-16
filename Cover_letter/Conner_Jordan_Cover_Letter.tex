@@ -1,0 +1,115 @@
+%-------------------------
+% Cover Letter in Latex
+% Based on Conner Jordan's Resume Template
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage[hidelinks]{hyperref}
+\usepackage[english]{babel}
+\usepackage{fontawesome5}
+
+\usepackage{CormorantGaramond}
+\usepackage{charter}
+
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.7in}
+\addtolength{\textheight}{1.4in}
+\urlstyle{same}
+
+% Color Definitions
+\definecolor{cvblue}{rgb}{0.054, 0.329, 0.518}
+\definecolor{black}{rgb}{0.075, 0.031, 0.063}
+\definecolor{darkcolor}{rgb}{0.059, 0.271, 0.224}
+\definecolor{SlateGrey}{rgb}{0.180, 0.180, 0.180}
+\definecolor{LightGrey}{rgb}{0.400, 0.400, 0.400}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Custom Commands
+\newcommand{\companyName}[1]{\textbf{\large#1}}
+\newcommand{\contactInfo}[4]{
+    \begin{center}
+    {\Huge \textbf{#1}}\\[4pt]
+    {\Large #2}\\[8pt]
+    \href{mailto:#3}{
+        \raisebox{-0.15\height}{\faEnvelope\ #3}} ~ | ~
+    \raisebox{-0.15\height}{\faMapMarker\ #4}
+    \end{center}
+}
+
+\begin{document}
+
+% Full Header
+\begin{center}
+  {\Huge \textbf{Conner Jordan}}\\[4pt]
+  {\Large San Luis Obispo, CA}\\[4pt]
+  \href{tel:+18059759793}{
+    \raisebox{-0.05\height}{\faPhone\ (805) 975-9793}} ~ | ~
+  \href{mailto:connercharlesjordan@gmail.com}{
+    \raisebox{-0.15\height}{\faEnvelope\ connercharlesjordan@gmail.com}} ~ | ~
+  \raisebox{-0.15\height}{\faMapMarker\ San Luis Obispo, CA} \\
+  \href{https://www.linkedin.com/in/conner-jordan-4b268514a/}{
+    \raisebox{-0.15\height}{\faLinkedin\ linkedin.com/in/conner-jordan-4b268514a}} ~ | ~
+  \href{https://github.com/cjordan223}{
+    \raisebox{-0.15\height}{\faGithub\ github.com/cjordan223}}
+\end{center}
+
+\vspace{16pt}
+
+% Date
+\begin{flushright}
+August 13, 2025
+\end{flushright}
+
+% Hiring Manager Details
+Hiring Manager\\
+Uniswap Labs
+
+\vspace{26pt}
+
+% Salutation
+\noindent
+Dear Uniswap Labs Team,
+
+\vspace{16pt}
+
+% Paragraph 1: Introduction
+I am excited to apply for the Application Security Engineer position at Uniswap Labs. With a strong background in web security, vulnerability remediation, cryptography, and secure API design, I am eager to help build and protect applications that enable millions to access DeFi simply and securely. Uniswap’s mission to reshape the flow of value on the internet resonates deeply with me, and the opportunity to work on the Web App, Wallet, and Uniswap Trading API is especially appealing.
+
+\vspace{16pt}
+
+% Paragraph 2: Current Experience
+In my current role as a Security Engineer for the University of California, I work directly with developers and IT teams to identify and mitigate security risks across thousands of endpoints. I integrate platforms like Rapid7, Jamf, BigFix, and ServiceNow to unify asset and vulnerability data, and develop automation in Python, PowerShell, and Bash to streamline incident response. My work often includes securing RESTful and GraphQL APIs, strengthening authentication mechanisms, and advising on cryptographic controls to meet both compliance and usability needs.
+
+\vspace{16pt}
+
+% Paragraph 3: Relevant Skills for Uniswap
+Previously at Great Wolf Resorts, I implemented secure identity integrations with Azure AD and Microsoft Graph, automated certificate lifecycle management, and built analytics pipelines to detect anomalies in real time. I have hands-on experience with incident response, web application testing (including OWASP Juice Shop and Burp Suite), and preventing classes of vulnerabilities through proactive design reviews. My expertise spans authentication protocols, cryptography-based security, and privacy-preserving design patterns—directly aligned with Uniswap’s requirements.
+
+\vspace{16pt}
+
+% Paragraph 4: Cultural Fit and Personal Connection
+I thrive in fast-moving environments where collaboration between engineering and security is essential to delivering safe, scalable products. Uniswap’s innovative spirit and focus on user trust feel like a natural fit. On a lighter note, my wife leads a legal team proudly nicknamed “Team Unicorn,” so I’m already surrounded by unicorn energy.
+
+\vspace{16pt}
+
+% Closing
+I would welcome the chance to bring my security expertise and collaborative approach to Uniswap Labs, helping safeguard its ecosystem and empowering users to participate in DeFi with confidence.
+
+\vspace{16pt}
+
+Sincerely,\\
+Conner Jordan
+
+\end{document}

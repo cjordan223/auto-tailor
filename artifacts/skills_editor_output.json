@@ -1,0 +1,49 @@
+{
+  "latex": "\\textbf{Programming Languages:} Swift, TypeScript, Bash, Java, PowerShell, SQL, Python, C++, C/C++\\n\\vspace{3pt}\\n\\textbf{Frontend:} Tailwind CSS, React.js, Vite, CSS, JavaScript, Next.js, MUI, HTML, Vue.js\\n\\vspace{3pt}\\n\\textbf{Backend:} Microservices, Golang, SOAP, Flask, Node.js, FastAPI, RESTful \\& GraphQL API Development, Spring Boot, Express.js, Django, Service-Oriented Architecture (SOA), .NET\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} AWS, Kafka, CI/CD (GitHub Actions, Jenkins), Lambda, Kubernetes, Docker, Azure, Observability Tools, Terraform, Ansible, Google Cloud Platform, Messaging Frameworks\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} MLX, ML Frameworks, Claude Code, LM Studio, Ollama, Vector Databases (Chroma, Pinecone), LangChain\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} Selenium, Raycast, GitHub Copilot, PowerToys, Shell Scripting, Crontab, Git, Postman\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} OWASP Top 10, HIPAA, Linux Stack, Vulnerability Management, Web Security Testing (Burp Suite, OWASP Juice Shop), NIST, BigFix, API Security, SOC2, Incident Response, GDPR, Rapid7, Jamf, PCI, CrowdStrike, SIEM\\n\\vspace{3pt}\\n\\textbf{Databases:} MongoDB, Snowflake, Databricks, MySQL, DynamoDB, PostgreSQL",
+  "change_notes": [
+    {
+      "section": "Programming Languages",
+      "added": [
+        "SQL"
+      ],
+      "removed": []
+    },
+    {
+      "section": "Frontend",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Backend",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Cloud \\& DevOps",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "AI \\& LLM Tools",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Automation \\& Productivity",
+      "added": [
+        "Git"
+      ],
+      "removed": []
+    },
+    {
+      "section": "Security \\& Operating Systems",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Databases",
+      "added": [],
+      "removed": []
+    }
+  ]
+}
