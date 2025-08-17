@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """
-jd_parser_min.py
-Reads jd.txt, extracts ~10 ATS-relevant skills using the same SYSTEM prompt you use in WebUI,
-and writes artifacts/jd_skills.json.
+Job Description Parser - Phase 1 of JD Parser Pipeline
 
-- Deterministic decoding
-- Evidence check + dedupe
-- Hard cap to N (default 10) for the flat skills list used by the next script
+Extracts relevant skills, responsibilities, and company values from job descriptions
+using local LLM and generates structured JSON output for subsequent pipeline stages.
+
+Features:
+- Deterministic decoding for consistent results
+- Evidence validation for each extracted skill
+- Skill categorization and confidence scoring
+- Duplicate detection and removal
+- Configurable skill limits for ATS optimization
+
+Usage:
+    python3 jd-parser.py --jd job_description.txt
+    python3 jd-parser.py --jd job_description.txt --model qwen2.5-32b-instruct
 """
 
 import argparse
@@ -19,23 +27,26 @@ from typing import Dict, Any, List
 import aiohttp
 import asyncio
 
-# -------------------
-# Config
-# -------------------
-# LM Studio OpenAI-compatible server
+# =============================================================================
+# Configuration Constants
+# =============================================================================
+
+# LM Studio OpenAI-compatible server configuration
 DEFAULT_BASE_URL = "http://127.0.0.1:1234/v1"
 DEFAULT_API_KEY = "lm-studio"
-DEFAULT_MODEL = "qwen2.5-32b-instruct"       # swap to the model you loaded
-TIMEOUT_S = 1800  # 30 minutes - let it take as long as needed
+DEFAULT_MODEL = "qwen2.5-32b-instruct"
+TIMEOUT_S = 1800  # 30 minutes timeout for LLM requests
 
+# LLM generation parameters for deterministic results
 GEN_OPTIONS = {
-    "temperature": 0.0,
-    "top_p": 0.9,
-    "seed": 42,
-    "max_tokens": 4096,                # Increased for larger responses
-    "stop": [],
+    "temperature": 0.0,    # Deterministic output
+    "top_p": 0.9,          # Nucleus sampling
+    "seed": 42,            # Fixed seed for reproducibility
+    "max_tokens": 4096,    # Increased for comprehensive responses
+    "stop": [],            # No stop sequences
 }
 
+# Resume skill categories for classification
 SUBSECTIONS = [
     "Programming Languages",
     "Frontend",
@@ -47,28 +58,26 @@ SUBSECTIONS = [
     "Databases",
 ]
 
-# -------------------
-# SYSTEM PROMPT — JD → Skills Extractor (your WebUI version, verbatim)
-# -------------------
-JD_EXTRACTOR_SYSTEM = """
-# -------------------
-# SYSTEM PROMPT — JD → Skills Extractor (your WebUI version, verbatim)
+# =============================================================================
+# Utility Functions
+# =============================================================================
+# SYSTEM PROMPT - JD -> Skills Extractor (your WebUI version, verbatim)
 # -------------------
 JD_EXTRACTOR_SYSTEM = """
-You are a deterministic parser that extracts ATS-relevant skill tokens from a Job Description (JD) and maps them to résumé skill subsections.
+You are a deterministic parser that extracts ATS-relevant skill tokens from a Job Description (JD) and maps them to resume skill subsections.
 You must only use content explicitly present or unambiguously implied by the JD. No fabrication.
 
 Purpose
-Produce a compact JSON payload of normalized skills ranked by importance, pre-mapped to these résumé subsections:
-	•	"Programming Languages"
-	•	"Frontend"
-	•	"Backend"
-	•	"Cloud & DevOps"
-	•	"AI & LLM Tools"
-	•	"Security & Operating Systems"
-	•	"Databases"
+Produce a compact JSON payload of normalized skills ranked by importance, pre-mapped to these resume subsections:
+	- "Programming Languages"
+	- "Frontend"
+	- "Backend"
+	- "Cloud & DevOps"
+	- "AI & LLM Tools"
+	- "Security & Operating Systems"
+	- "Databases"
 
-This JSON will be fed into a separate LaTeX Skills Editor that performs ≤2 replacements per subsection.
+This JSON will be fed into a separate LaTeX Skills Editor that performs <=2 replacements per subsection.
 
 Input (USER message)
 A raw JD text (may include bullets/sections).
@@ -106,52 +115,52 @@ Return JSON only (no prose, no code fences), matching this schema:
 }
 
 Constraints
-	•	Precision first. Extract only concrete skills, tools, protocols, standards, frameworks, platforms, or tightly related phrases present in the JD.
-	•	No defaults. Do not inject standards (e.g., NIST, ISO, PCI) or tools unless mentioned or clearly implied.
-	•	Normalization: lower-case for matching, return a canonical form in Title Case (e.g., “single sign-on” → canonical “SSO”).
-	•	Deduplicate across spelling/wording; prefer canonical over variants.
-	•	Scoring: confidence ∈ [0,1]. Dictionary/regex hits + repeated mentions + role-critical sections → higher confidence. Weakly implied → ≤0.5.
-	•	Section mapping rule of thumb:
-	•	Security & Operating Systems: web/mobile security, authN/authZ, SSO/OAuth/OIDC, incident response, cryptography, SIEM, EDR, network/security protocols (TLS, TCP when security-related), threat modeling, secure coding, OWASP, AppSec/DevSecOps.
-	•	Backend: APIs/REST/GraphQL, microservices, backend frameworks, scalability, distributed systems.
-	•	Cloud & DevOps: AWS/Azure/GCP, containers/orchestration, IaC (Terraform/CloudFormation), CI/CD, observability, gateways, secrets management.
-	•	Frontend: React/Vue/Next/Tailwind, frontend security if explicitly framed as client-side.
-	•	AI & LLM Tools: LLM frameworks, vector DBs, embedding tools (only if mentioned).
-	•	Automation & Productivity: testing/automation tooling (Postman/Selenium), scripting, build tools.
-	•	Databases: SQL/NoSQL engines, data warehouses.
-	•	Programming Languages: explicit langs only.
-	•	Capacity limits for the downstream editor:
-	•	Provide any number in job_skills_ranked, but in by_section_top3 cap to 3 items per subsection, ordered by confidence.
-	•	Evidence: include minimal snippets (few words) to justify extraction.
-	•	No reformatting of JD; just extract.
+	-	Precision first. Extract only concrete skills, tools, protocols, standards, frameworks, platforms, or tightly related phrases present in the JD.
+	-	No defaults. Do not inject standards (e.g., NIST, ISO, PCI) or tools unless mentioned or clearly implied.
+	-	Normalization: lower-case for matching, return a canonical form in Title Case (e.g., single sign-on -> canonical SSO).
+	-	Deduplicate across spelling/wording; prefer canonical over variants.
+	-	Scoring: confidence in [0,1]. Dictionary/regex hits + repeated mentions + role-critical sections -> higher confidence. Weakly implied -> <=0.5.
+	-	Section mapping rule of thumb:
+	-	Security & Operating Systems: web/mobile security, authN/authZ, SSO/OAuth/OIDC, incident response, cryptography, SIEM, EDR, network/security protocols (TLS, TCP when security-related), threat modeling, secure coding, OWASP, AppSec/DevSecOps.
+	-	Backend: APIs/REST/GraphQL, microservices, backend frameworks, scalability, distributed systems.
+	-	Cloud & DevOps: AWS/Azure/GCP, containers/orchestration, IaC (Terraform/CloudFormation), CI/CD, observability, gateways, secrets management.
+	-	Frontend: React/Vue/Next/Tailwind, frontend security if explicitly framed as client-side.
+	-	AI & LLM Tools: LLM frameworks, vector DBs, embedding tools (only if mentioned).
+	-	Automation & Productivity: testing/automation tooling (Postman/Selenium), scripting, build tools.
+	-	Databases: SQL/NoSQL engines, data warehouses.
+	-	Programming Languages: explicit langs only.
+	-	Capacity limits for the downstream editor:
+	-	Provide any number in job_skills_ranked, but in by_section_top3 cap to 3 items per subsection, ordered by confidence.
+	-	Evidence: include minimal snippets (few words) to justify extraction.
+	-	No reformatting of JD; just extract.
 
 Canonicalization & Aliases (examples)
-	•	“single sign on”, “single-sign-on” → SSO
-	•	“oauth 2.0”, “oauth2” → OAuth 2.0
-	•	“oidc” → OpenID Connect (OIDC)
-	•	“mfa”, “2fa” → MFA
-	•	“web app security”, “application security” → Web Security
-	•	“ir”, “incident mgmt” (if clearly incident context) → Incident Response
-	•	“edr” → EDR
-	•	“siem” (ELK/Datadog/Splunk refs) → SIEM
-	•	“crypto” → If clearly about Cryptography; if blockchain context, canonicalize to Crypto (Blockchain)
+	-	single sign on, single-sign-on -> SSO
+	-	oauth 2.0, oauth2 -> OAuth 2.0
+	-	oidc -> OpenID Connect (OIDC)
+	-	mfa, "2fa" -> MFA
+	-	web app security, application security -> Web Security
+	-	ir, incident mgmt (if clearly incident context) -> Incident Response
+	-	edr -> EDR
+	-	siem (ELK/Datadog/Splunk refs) -> SIEM
+	-	crypto -> If clearly about Cryptography; if blockchain context, canonicalize to Crypto (Blockchain)
 
 Disambiguation
-	•	“Crypto”: If JD references security/privacy/cryptography, map to Cryptography. If tokens/chains/DeFi or blockchain infra, map to Crypto (Blockchain) under Backend or Security based on context.
-	•	“API Security” vs “API”: If security is emphasized (authN/Z, OAuth, rate limiting, threat modeling), map to Security & Operating Systems as API Security; otherwise Backend as REST APIs/GraphQL.
+	-	Crypto: If JD references security/privacy/cryptography, map to Cryptography. If tokens/chains/DeFi or blockchain infra, map to Crypto (Blockchain) under Backend or Security based on context.
+	-	API Security vs API: If security is emphasized (authN/Z, OAuth, rate limiting, threat modeling), map to Security & Operating Systems as API Security; otherwise Backend as REST APIs/GraphQL.
 
 Algorithm (internal)
-	1.	Tokenize → noun chunks → lowercase.
+	1.	Tokenize -> noun chunks -> lowercase.
 	2.	Exact/regex match against a compact security+software dictionary (authN/Z, SSO, OAuth/OIDC, cryptography, incident response, SIEM, EDR, OWASP, REST, GraphQL, CI/CD, Terraform, AWS/Azure/GCP, React/Vue/Next, Python/TS/Java, SQL, Postgres/MySQL/Mongo, Kafka, Docker/K8s, etc.).
 	3.	Boost terms appearing in Responsibilities/Requirements sections.
-	4.	Keep only concrete skills/tools/standards; drop soft traits (“communication,” “decision making”) unless explicitly requested.
+	4.	Keep only concrete skills/tools/standards; drop soft traits (communication, decision making) unless explicitly requested.
 	5.	Map each token to a subsection; assign confidence with justification.
-	6.	Build by_section_top3 by the highest-confidence items per subsection (≤3).
+	6.	Build by_section_top3 by the highest-confidence items per subsection (<=3).
 	7.	Return JSON only.
 
 Style
-	•	Deterministic, terse, structured.
-	•	Return JSON only. If uncertain, exclude the item or add a short note in notes.
+	-	Deterministic, terse, structured.
+	-	Return JSON only. If uncertain, exclude the item or add a short note in notes.
 
 Forbidden behavior
 - Do not restate, paraphrase, or summarize the JD.
@@ -161,7 +170,6 @@ Forbidden behavior
 Validation
 - Every extracted item MUST include at least one evidence snippet that appears verbatim (case-insensitive) in the JD.
 """
-""".strip()
 
 # -------------------
 # Helpers
@@ -169,10 +177,11 @@ Validation
 
 
 def norm(s: str) -> str:
+    """Normalize Unicode text using NFKC form, strip whitespace, and convert to lowercase."""
     return unicodedata.normalize("NFKC", s).strip().lower()
 
 
-def evidence_occurs(evidence_list, jd_text):
+def evidence_occurs(evidence_list: List[str], jd_text: str) -> bool:
     jdn = norm(jd_text)
     for ev in evidence_list or []:
         if norm(ev) and norm(ev) in jdn:
@@ -370,8 +379,8 @@ async def main():
 
     out = {
         "job_skills_ranked": ranked,   # cleaned, de-duped, evidence-checked
-        "by_section_top3": by_section,  # trimmed to ≤3 each
-        # <= N (default 10) — feed this to the editor
+        "by_section_top3": by_section,  # trimmed to <=3 each
+        # <= N (default 10) - feed this to the editor
         "skills_flat": flat
     }
 
@@ -384,7 +393,7 @@ async def main():
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ Wrote output to: {output_path}", file=sys.stderr)
+    print(f" Wrote output to: {output_path}", file=sys.stderr)
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":

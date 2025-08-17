@@ -201,6 +201,20 @@ def validate_updated_block(updated: str) -> bool:
     return True
 
 
+def clean_unicode_content(content):
+    """Remove problematic Unicode control characters from content"""
+    import unicodedata
+
+    # Remove control characters (U+0000 to U+001F, except tab, newline, carriage return)
+    cleaned = ''
+    for char in content:
+        if unicodedata.category(char) == 'Cc' and char not in '\t\n\r':
+            continue
+        cleaned += char
+
+    return cleaned
+
+
 def shuffle_skills_in_block(block_text: str) -> str:
     """Shuffle skills in each subsection for a more organic look."""
     lines = block_text.split('\n')
@@ -510,7 +524,8 @@ def main():
         (artifacts_dir / "skills_editor_output.json").write_text(
             json.dumps(editor_json, ensure_ascii=False, indent=2), encoding="utf-8"
         )
-        (artifacts_dir / "skills_updated_block.tex").write_text(updated_block, encoding="utf-8")
+        (artifacts_dir / "skills_updated_block.tex").write_text(
+            clean_unicode_content(updated_block), encoding="utf-8")
 
         print("\nWrote artifacts:")
         print("  artifacts/skills_editor_output.json")
@@ -519,13 +534,15 @@ def main():
         # Only update actual resume files if not in artifacts-only mode
         if not args.artifacts_only:
             # Update skills.tex
-            skills_path.write_text(updated_block, encoding="utf-8")
+            skills_path.write_text(clean_unicode_content(
+                updated_block), encoding="utf-8")
             print(f"\n✅ Updated: {skills_path}")
 
             # Update main resume .tex file
             try:
                 updated_resume = update_resume_tex(resume_path, updated_block)
-                resume_path.write_text(updated_resume, encoding="utf-8")
+                resume_path.write_text(clean_unicode_content(
+                    updated_resume), encoding="utf-8")
                 print(f"✅ Updated: {resume_path}")
             except Exception as e:
                 print(f"⚠️  Could not update main resume: {e}")

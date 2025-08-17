@@ -1,92 +1,44 @@
 {
   "job_skills_ranked": [
     {
-      "token": "nessus",
-      "canonical": "Nessus",
+      "token": "application security",
+      "canonical": "Application Security (AppSec)",
       "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Network penetration testing with tools such as Nessus, Nmap, Metasploit"
+        "Lead Security Reviews",
+        "Contribute to Application Security (AppSec) Program Enhancements"
       ],
       "aliases": []
     },
     {
-      "token": "nmap",
-      "canonical": "Nmap",
+      "token": "penetration testing",
+      "canonical": "Penetration Testing",
       "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Network penetration testing with tools such as Nessus, Nmap, Metasploit"
+        "Execute Penetration Testing",
+        "3+ years of experience in Penetration testing"
       ],
       "aliases": []
     },
     {
-      "token": "metasploit",
-      "canonical": "Metasploit",
+      "token": "sast",
+      "canonical": "SAST (Static Application Security Testing)",
       "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Network penetration testing with tools such as Nessus, Nmap, Metasploit"
+        "2+ years of experience with SAST"
       ],
       "aliases": []
     },
     {
-      "token": "burp suite pro",
-      "canonical": "Burp Suite Pro",
-      "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "token": "python",
+      "canonical": "Python",
+      "section": "Programming Languages",
+      "confidence": 1.0,
       "evidence": [
-        "Web application testing including advanced usage of Burp Suite Pro"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "tcp/ip networking",
-      "canonical": "TCP/IP Networking",
-      "section": "Security & Operating Systems",
-      "confidence": 0.95,
-      "evidence": [
-        "TCP/IP networking and ability to troubleshoot connectivity issues"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "penetration testing reports",
-      "canonical": "Penetration Testing Reports",
-      "section": "Security & Operating Systems",
-      "confidence": 0.95,
-      "evidence": [
-        "Produce penetration testing reports based on testing results"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "kali linux environment",
-      "canonical": "Kali Linux Environment",
-      "section": "Security & Operating Systems",
-      "confidence": 0.95,
-      "evidence": [
-        "Working knowledge of tools such as Burp Suite, Nessus, and the Kali Linux environment"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "cloud penetration testing",
-      "canonical": "Cloud Penetration Testing",
-      "section": "Security & Operating Systems",
-      "confidence": 0.95,
-      "evidence": [
-        "Experience with cloud penetration testing including K8S, AWS, and Azure"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "k8s",
-      "canonical": "Kubernetes (K8S)",
-      "section": "Cloud & DevOps",
-      "confidence": 0.95,
-      "evidence": [
-        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+        "modern high-level programming language like Python"
       ],
       "aliases": []
     },
@@ -94,9 +46,19 @@
       "token": "aws",
       "canonical": "AWS",
       "section": "Cloud & DevOps",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+        "Hands-on experience with cloud-native security best practices across AWS, GCP, and/or Azure"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "gcp",
+      "canonical": "GCP",
+      "section": "Cloud & DevOps",
+      "confidence": 1.0,
+      "evidence": [
+        "Hands-on experience with cloud-native security best practices across AWS, GCP, and/or Azure"
       ],
       "aliases": []
     },
@@ -104,71 +66,82 @@
       "token": "azure",
       "canonical": "Azure",
       "section": "Cloud & DevOps",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Experience with cloud penetration testing including K8S, AWS, and Azure"
+        "Hands-on experience with cloud-native security best practices across AWS, GCP, and/or Azure"
       ],
       "aliases": []
     },
     {
-      "token": "dradis",
-      "canonical": "Dradis",
+      "token": "encryption",
+      "canonical": "Encryption",
       "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Experience with Dradis a plus and knowledge of vulnerabilities and exploits"
+        "In-depth knowledge of application security, network security, authentication, authorization, identity systems, encryption"
       ],
       "aliases": []
     },
     {
-      "token": "oscp",
-      "canonical": "OSCP (Offensive Security Certified Professional)",
+      "token": "authentication",
+      "canonical": "Authentication (authN)",
       "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Required Certification: Offensive Security Certified Professional (OSCP)"
+        "In-depth knowledge of application security, network security, authentication"
       ],
       "aliases": []
     },
     {
-      "token": "gpen",
-      "canonical": "GPEN (GIAC Certified Penetration Tester)",
+      "token": "authorization",
+      "canonical": "Authorization (authZ)",
       "section": "Security & Operating Systems",
-      "confidence": 0.95,
+      "confidence": 1.0,
       "evidence": [
-        "Desired Certifications: GPEN: GIAC Certified Penetration Tester"
+        "In-depth knowledge of application security, network security, authentication, authorization"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "identity systems",
+      "canonical": "Identity Systems",
+      "section": "Security & Operating Systems",
+      "confidence": 1.0,
+      "evidence": [
+        "In-depth knowledge of application security, network security, authentication, authorization, identity systems"
       ],
       "aliases": []
     }
   ],
   "by_section_top3": {
-    "Programming Languages": [],
+    "Programming Languages": [
+      "Python"
+    ],
     "Frontend": [],
     "Backend": [],
     "Cloud & DevOps": [
-      "Kubernetes (K8S)",
       "AWS",
+      "GCP",
       "Azure"
     ],
     "AI & LLM Tools": [],
-    "Automation & Productivity": [],
     "Security & Operating Systems": [
-      "Nessus",
-      "Metasploit",
-      "Burp Suite Pro"
+      "Application Security (AppSec)",
+      "Penetration Testing",
+      "SAST (Static Application Security Testing)"
     ],
     "Databases": []
   },
   "skills_flat": [
-    "Nessus",
-    "Nmap",
-    "Metasploit",
-    "Burp Suite Pro",
-    "TCP/IP Networking",
-    "Penetration Testing Reports",
-    "Kali Linux Environment",
-    "Cloud Penetration Testing",
-    "Kubernetes (K8S)",
-    "AWS"
+    "Application Security (AppSec)",
+    "Penetration Testing",
+    "SAST (Static Application Security Testing)",
+    "Python",
+    "AWS",
+    "GCP",
+    "Azure",
+    "Encryption",
+    "Authentication (authN)",
+    "Authorization (authZ)"
   ]
 }

@@ -809,17 +809,22 @@ def update_resume():
             after_pdf_b64 = None
 
             # Get before PDF (from permanent baseline backup)
-            before_pdf_path = Path('baseline_backup/Conner_Jordan_Software_Engineer.pdf')
+            before_pdf_path = Path(
+                'baseline_backup/Conner_Jordan_Software_Engineer.pdf')
             if before_pdf_path.exists():
                 before_pdf_b64 = pdf_to_base64(str(before_pdf_path))
 
             # Generate after PDF (compile updated resume)
             resume_tex = Path('Resume/Conner_Jordan_Software_Engineer.tex')
             if resume_tex.exists():
-                after_pdf_path = compile_latex_to_pdf(
+                pdf_result = compile_latex_to_pdf(
                     str(resume_tex), str(Path(session_data['temp_dir']) / 'after'))
-                if after_pdf_path:
-                    after_pdf_b64 = pdf_to_base64(after_pdf_path)
+                if pdf_result and pdf_result.get('success'):
+                    after_pdf_b64 = pdf_to_base64(pdf_result['pdf_path'])
+                else:
+                    print(
+                        f"PDF compilation failed: {pdf_result.get('error', 'Unknown error')}")
+                    after_pdf_b64 = None
 
             # Generate unique download ID for the final result
             download_id = f"final_result_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{os.getpid()}"
@@ -843,7 +848,7 @@ def update_resume():
             if before_pdf_b64 and after_pdf_b64:
                 response_data['before_pdf'] = before_pdf_b64
                 response_data['after_pdf'] = after_pdf_b64
-            
+
             # Include changes summary if available
             if 'changes' in result:
                 response_data['changes'] = result['changes']
@@ -911,12 +916,12 @@ def run_jd_parsing(jd_file_path: str, temp_dir: str) -> Dict[str, Any]:
     """Run only the JD parsing part of the pipeline"""
     try:
         print("🔧 Running jd-parser.py...")
-        
-        # Use subprocess to run jd-parser properly  
+
+        # Use subprocess to run jd-parser properly
         result = subprocess.run([
             sys.executable, 'jd-parser.py', '--jd', jd_file_path
         ], capture_output=True, text=True, timeout=1800)  # 30 minutes timeout
-        
+
         print(f"JD-parser exit code: {result.returncode}")
         if result.stdout:
             print(f"JD-parser stdout: {result.stdout}")
@@ -961,25 +966,26 @@ def ensure_baseline_backup() -> bool:
         baseline_dir = Path('baseline_backup')
         baseline_tex = baseline_dir / 'Conner_Jordan_Software_Engineer.tex'
         baseline_pdf = baseline_dir / 'Conner_Jordan_Software_Engineer.pdf'
-        
+
         # If baseline backup already exists, don't overwrite it
         if baseline_dir.exists() and baseline_tex.exists() and baseline_pdf.exists():
             print("✅ Using existing baseline backup")
             return True
-            
+
         print("📁 Creating baseline backup (first time setup)...")
         baseline_dir.mkdir(exist_ok=True)
-        
+
         # Copy current resume files to baseline backup
         current_tex = Path('Resume/Conner_Jordan_Software_Engineer.tex')
         current_pdf = Path('Resume/Conner_Jordan_Software_Engineer.pdf')
-        
+
         if current_tex.exists():
             shutil.copy2(current_tex, baseline_tex)
             print(f"✅ Backed up baseline TEX: {current_tex} -> {baseline_tex}")
         else:
-            print(f"⚠️  Warning: Could not find current resume TEX file: {current_tex}")
-            
+            print(
+                f"⚠️  Warning: Could not find current resume TEX file: {current_tex}")
+
         if current_pdf.exists():
             shutil.copy2(current_pdf, baseline_pdf)
             print(f"✅ Backed up baseline PDF: {current_pdf} -> {baseline_pdf}")
@@ -987,32 +993,36 @@ def ensure_baseline_backup() -> bool:
             # Generate PDF from TEX if PDF doesn't exist
             if current_tex.exists():
                 print("📄 Generating baseline PDF from TEX...")
-                pdf_path = compile_latex_to_pdf(str(current_tex), str(baseline_dir))
-                if pdf_path:
-                    print(f"✅ Generated baseline PDF: {pdf_path}")
+                pdf_result = compile_latex_to_pdf(
+                    str(current_tex), str(baseline_dir))
+                if pdf_result and pdf_result.get('success'):
+                    print(
+                        f"✅ Generated baseline PDF: {pdf_result['pdf_path']}")
                 else:
-                    print("❌ Failed to generate baseline PDF")
+                    print(
+                        f"❌ Failed to generate baseline PDF: {pdf_result.get('error', 'Unknown error')}")
                     return False
             else:
                 print("❌ Cannot create baseline backup - no TEX or PDF file found")
                 return False
-        
+
         print("✅ Baseline backup created successfully")
         return True
-        
+
     except Exception as e:
         print(f"❌ Failed to create baseline backup: {e}")
         return False
+
 
 def parse_all_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
     """Parse changes from both skills and summary editor outputs"""
     try:
         # Get skills changes
         skills_changes = parse_skills_changes(temp_dir)
-        
+
         # Get summary changes
         summary_changes = parse_summary_changes(temp_dir)
-        
+
         # Combine changes
         all_changes = {
             'added': [],
@@ -1021,36 +1031,37 @@ def parse_all_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
             'summary_updated': False,
             'summary_changes': None
         }
-        
+
         if skills_changes:
             all_changes['added'].extend(skills_changes.get('added', []))
             all_changes['removed'].extend(skills_changes.get('removed', []))
             all_changes['skipped'].extend(skills_changes.get('skipped', []))
-        
+
         if summary_changes:
             all_changes['summary_updated'] = True
             all_changes['summary_changes'] = summary_changes
-        
+
         return all_changes if (all_changes['added'] or all_changes['removed'] or all_changes['skipped'] or all_changes['summary_updated']) else None
-        
+
     except Exception as e:
         print(f"Warning: Could not parse changes: {e}")
         return None
+
 
 def parse_summary_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
     """Parse changes from the summary editor output"""
     try:
         summary_output_path = Path('artifacts/summary_editor_output.json')
-        
+
         if not summary_output_path.exists():
             return None
-            
+
         with open(summary_output_path, 'r') as f:
             summary_output = json.load(f)
-        
+
         original_summary = summary_output.get('original_summary', '')
         revised_summary = summary_output.get('revised_summary', '')
-        
+
         if original_summary and revised_summary and original_summary.strip() != revised_summary.strip():
             return {
                 'original': original_summary.strip(),
@@ -1058,12 +1069,13 @@ def parse_summary_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
                 'change_type': 'Professional Summary Updated',
                 'reason': 'Tailored to align with job requirements and company values'
             }
-        
+
         return None
-        
+
     except Exception as e:
         print(f"Warning: Could not parse summary changes: {e}")
         return None
+
 
 def parse_skills_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
     """Parse changes from the skills editor output and extract added/removed/skipped skills"""
@@ -1071,31 +1083,31 @@ def parse_skills_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
         # Read the skills editor output
         editor_output_path = Path('artifacts/skills_editor_output.json')
         jd_skills_path = Path('artifacts/jd_skills.json')
-        
+
         if not editor_output_path.exists() or not jd_skills_path.exists():
             return None
-            
+
         with open(editor_output_path, 'r') as f:
             editor_output = json.load(f)
-            
+
         with open(jd_skills_path, 'r') as f:
             jd_skills = json.load(f)
-        
+
         changes = {
             'added': [],
             'removed': [],
             'skipped': []
         }
-        
+
         # Parse change notes from editor output
         change_notes = editor_output.get('change_notes', [])
-        
+
         for note in change_notes:
             section = note.get('section', 'Unknown')
             added_skills = note.get('added', note.get('adds', []))
             removed_skills = note.get('removed', note.get('removes', []))
             reason = note.get('reason', '')
-            
+
             # Add skills that were added
             for skill in added_skills:
                 changes['added'].append({
@@ -1103,24 +1115,24 @@ def parse_skills_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
                     'section': section,
                     'reason': reason or 'Added from job requirements'
                 })
-            
-            # Add skills that were removed  
+
+            # Add skills that were removed
             for skill in removed_skills:
                 changes['removed'].append({
                     'skill': skill,
                     'section': section,
                     'reason': reason or 'Removed to make room for job-relevant skills'
                 })
-        
+
         # Identify skills that were extracted but not added (skipped)
         jd_skills_flat = jd_skills.get('skills_flat', [])
         added_skills_list = [change['skill'] for change in changes['added']]
-        
+
         # Read the current skills to see what was actually added
         skills_updated_path = Path('artifacts/skills_updated_block.tex')
         if skills_updated_path.exists():
             updated_skills_content = skills_updated_path.read_text()
-            
+
             for skill in jd_skills_flat:
                 if skill not in added_skills_list and skill not in updated_skills_content:
                     # This skill was extracted but not added
@@ -1128,31 +1140,33 @@ def parse_skills_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
                     skill_section = 'Unknown'
                     for ranked_skill in jd_skills.get('job_skills_ranked', []):
                         if ranked_skill.get('canonical') == skill:
-                            skill_section = ranked_skill.get('section', 'Unknown')
+                            skill_section = ranked_skill.get(
+                                'section', 'Unknown')
                             break
-                    
+
                     changes['skipped'].append({
                         'skill': skill,
                         'section': skill_section,
                         'reason': 'Not added - may be irrelevant to section or already present'
                     })
-        
+
         return changes if (changes['added'] or changes['removed'] or changes['skipped']) else None
-        
+
     except Exception as e:
         print(f"Warning: Could not parse skills changes: {e}")
         return None
+
 
 def run_resume_update(temp_dir: str) -> Dict[str, Any]:
     """Run only the resume update part of the pipeline"""
     try:
         print("🔧 Running skills-updater.py...")
-        
+
         # Step 1: Use subprocess to run skills-updater
         skills_result = subprocess.run([
             sys.executable, 'skills-updater.py'
         ], capture_output=True, text=True, timeout=300)
-        
+
         print(f"Skills-updater exit code: {skills_result.returncode}")
         if skills_result.stdout:
             print(f"Skills-updater stdout: {skills_result.stdout}")
@@ -1166,13 +1180,13 @@ def run_resume_update(temp_dir: str) -> Dict[str, Any]:
             }
 
         print("✅ Skills updater completed successfully")
-        
+
         # Step 2: Use subprocess to run summary-updater
         print("🔧 Running summary-updater.py...")
         summary_result = subprocess.run([
             sys.executable, 'summary-updater.py'
         ], capture_output=True, text=True, timeout=300)
-        
+
         print(f"Summary-updater exit code: {summary_result.returncode}")
         if summary_result.stdout:
             print(f"Summary-updater stdout: {summary_result.stdout}")
@@ -1199,32 +1213,32 @@ def run_resume_update(temp_dir: str) -> Dict[str, Any]:
                 'success': False,
                 'error': 'Skills updater did not generate required artifacts'
             }
-            
+
         if not summary_updated_block.exists():
             return {
                 'success': False,
                 'error': 'Summary updater did not generate required artifacts'
             }
-        
+
         # Parse changes from skills and summary editor outputs
         changes = parse_all_changes(temp_dir)
-        
+
         result_data = {
             'success': True,
             'files': [
-                'artifacts/jd_skills.json', 
-                'artifacts/skills_updated_block.tex', 
+                'artifacts/jd_skills.json',
+                'artifacts/skills_updated_block.tex',
                 'artifacts/skills_editor_output.json',
                 'artifacts/summary_updated_block.tex',
-                'artifacts/summary_editor_output.json', 
-                'skills.tex', 
+                'artifacts/summary_editor_output.json',
+                'skills.tex',
                 'Resume/Conner_Jordan_Software_Engineer.tex'
             ]
         }
-        
+
         if changes:
             result_data['changes'] = changes
-            
+
         return result_data
 
     except subprocess.TimeoutExpired:
@@ -1262,25 +1276,26 @@ def reset_baseline():
         if baseline_dir.exists():
             shutil.rmtree(baseline_dir)
             print("🗑️ Removed existing baseline backup")
-        
+
         # Create new baseline backup
         success = ensure_baseline_backup()
-        
+
         if success:
             return jsonify({'success': True, 'message': 'Baseline backup reset successfully'})
         else:
             return jsonify({'success': False, 'error': 'Failed to create new baseline backup'}), 500
-            
+
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     print("🚀 Starting JD Parser Web UI...")
     print("📝 Open http://localhost:8081 in your browser")
     print("💡 Make sure LM Studio is running with qwen2.5-32b-instruct model")
-    
+
     # Ensure baseline backup exists on startup
     print("\n🔧 Checking baseline backup...")
     ensure_baseline_backup()
-    
+
     app.run(debug=False, host='127.0.0.1', port=8081, use_reloader=False)

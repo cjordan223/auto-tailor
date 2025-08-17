@@ -1,19 +1,54 @@
 {
-  "latex": "\\textbf{Programming Languages:} Bash, PowerShell, SQL, C/C++, Swift, TypeScript, Python, Java\\n\\vspace{3pt}\\n\\textbf{Frontend:} Next.js, Vite, React.js, Tailwind CSS, MUI, Vue.js\\n\\vspace{3pt}\\n\\textbf{Backend:} Spring Boot, FastAPI, Django, Node.js, Express.js, RESTful \\& GraphQL API Development, gRPC, Flask, .NET\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} GPU Clusters, Terraform, Lambda, Azure, AWS, Google Cloud Platform, Kubernetes (K8S), Ansible, CI/CD (GitHub Actions, Jenkins), Docker\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Ollama, MLX, LangChain, LM Studio, Claude Code, Vector Databases (Chroma, Pinecone), LLMs\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} Shell Scripting, Postman, Unit Testing, Crontab, Selenium, PowerToys, Raycast, Git, GitHub Copilot\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} OWASP Top 10, Debugging Information, API Security, Secrets Management, ServiceNow, Rapid7, BigFix, Jamf, Web Security Testing (Burp Suite Pro, OWASP Juice Shop), Vulnerability Management, Incident Response, CrowdStrike, Nessus, Nmap, Metasploit, Kali Linux Environment, Cloud Penetration Testing, Dradis, OSCP (Offensive Security Certified Professional), GPEN (GIAC Certified Penetration Tester)\\n\\vspace{3pt}\\n\\textbf{Databases:} PostgreSQL, Snowflake, DynamoDB, Databricks, MySQL, Spark, MongoDB",
+  "latex": "\\textbf{Programming Languages:} Python, TypeScript, Java, C/C++, SQL, Swift, PowerShell, Bash\\n\\vspace{3pt}\\n\\textbf{Frontend:} React.js, Vue.js, Tailwind CSS, MUI, Vite, Next.js\\n\\vspace{3pt}\\n\\textbf{Backend:} Node.js, Express.js, Django, Flask, Spring Boot, FastAPI, .NET, RESTful \\& GraphQL API Development\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} AWS, Google Cloud Platform (GCP), Azure, Docker, Kubernetes, Lambda, Ansible, Terraform, CI/CD (GitHub Actions, Jenkins)\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Claude Code, LangChain, LM Studio, Ollama, MLX, Vector Databases (Chroma, Pinecone)\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} Git, Postman, Selenium, GitHub Copilot, Raycast, PowerToys, Crontab, Shell Scripting\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} Rapid7, CrowdStrike, Jamf, BigFix, ServiceNow, Vulnerability Management, OWASP Top 10, Web Security Testing (Burp Suite, OWASP Juice Shop), API Security, Incident Response, Application Security (AppSec), Penetration Testing, SAST (Static Application Security Testing), Encryption, Authentication (authN), Authorization (authZ), Identity Systems\\n\\vspace{3pt}\\n\\textbf{Databases:} MySQL, PostgreSQL, MongoDB, DynamoDB, Snowflake, Databricks",
   "change_notes": [
+    {
+      "section": "Programming Languages",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Frontend",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Backend",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Cloud \\& DevOps",
+      "added": [
+        "Google Cloud Platform (GCP)"
+      ],
+      "removed": []
+    },
+    {
+      "section": "AI \\& LLM Tools",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Automation \\& Productivity",
+      "added": [],
+      "removed": []
+    },
     {
       "section": "Security \\& Operating Systems",
       "added": [
-        "Nessus",
-        "Nmap",
-        "Metasploit",
-        "Burp Suite Pro",
-        "Kali Linux Environment",
-        "Cloud Penetration Testing",
-        "Dradis",
-        "OSCP (Offensive Security Certified Professional)",
-        "GPEN (GIAC Certified Penetration Tester)"
+        "Application Security (AppSec)",
+        "Penetration Testing",
+        "SAST (Static Application Security Testing)",
+        "Encryption",
+        "Authentication (authN)",
+        "Authorization (authZ)",
+        "Identity Systems"
       ],
+      "removed": []
+    },
+    {
+      "section": "Databases",
+      "added": [],
       "removed": []
     }
   ]

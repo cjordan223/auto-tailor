@@ -30,8 +30,24 @@ def read_file_content(path):
         sys.exit(f"❌ ERROR: File not found: {path}")
 
 
+def clean_unicode_content(content):
+    """Remove problematic Unicode control characters from content"""
+    import unicodedata
+
+    # Remove control characters (U+0000 to U+001F, except tab, newline, carriage return)
+    cleaned = ''
+    for char in content:
+        if unicodedata.category(char) == 'Cc' and char not in '\t\n\r':
+            continue
+        cleaned += char
+
+    return cleaned
+
+
 def write_file_content(path, content):
-    path.write_text(content)
+    # Clean the content before writing
+    cleaned_content = clean_unicode_content(content)
+    path.write_text(cleaned_content)
 
 
 def get_llm_response(base_url, api_key, model, prompt):
@@ -50,11 +66,11 @@ def get_llm_response(base_url, api_key, model, prompt):
             "max_tokens": 2000,
             "stop": []
         }
-        
+
         response = requests.post(
-            url, 
-            headers={"Authorization": f"Bearer {api_key}"}, 
-            json=payload, 
+            url,
+            headers={"Authorization": f"Bearer {api_key}"},
+            json=payload,
             timeout=1800  # 30 minutes
         )
         response.raise_for_status()
@@ -94,7 +110,8 @@ def main():
     ap.add_argument(
         "--base-url", default="http://127.0.0.1:1234/v1", help="LM Studio base URL"
     )
-    ap.add_argument("--api-key", default="lm-studio", help="API key for LM Studio")
+    ap.add_argument("--api-key", default="lm-studio",
+                    help="API key for LM Studio")
     ap.add_argument(
         "--model", default="qwen2.5-32b-instruct", help="Model name for the LLM"
     )
@@ -150,7 +167,8 @@ def main():
 
     # Get LLM response
     print("🧠 Calling LLM to revise professional summary...")
-    revised_summary = get_llm_response(args.base_url, get_api_key(args.api_key), args.model, prompt)
+    revised_summary = get_llm_response(
+        args.base_url, get_api_key(args.api_key), args.model, prompt)
     print("✅ LLM response received.")
 
     # Save artifacts
@@ -180,7 +198,8 @@ def main():
         print(f"✅ Revised summary saved to {artifacts_dir}")
     else:
         # Update resume file
-        updated_resume_content = update_tex_file(resume_content, revised_summary)
+        updated_resume_content = update_tex_file(
+            resume_content, revised_summary)
         write_file_content(resume_file_path, updated_resume_content)
         print(f"✅ Resume file updated: {resume_file_path}")
 

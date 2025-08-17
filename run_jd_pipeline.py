@@ -6,10 +6,11 @@ Runs both jd-parser.py and skills-updater.py in sequence to automate the complet
 JD analysis and resume skills update workflow.
 
 Usage:
-    python3 run_jd_pipeline.py [--artifacts-only] [--dry-run] [--jd jd.txt]
+    python3 run_jd_pipeline.py [--artifacts-only] [--dry-run] [--no-clean] [--jd jd.txt]
 """
 
 import argparse
+import shutil
 import subprocess
 import sys
 import time
@@ -53,10 +54,24 @@ def main():
                     help="API key for LM Studio")
     ap.add_argument("--model", default="qwen2.5-32b-instruct",
                     help="Model name for both scripts")
+    ap.add_argument("--no-clean", action="store_true",
+                    help="Skip cleaning artifacts directory (for debugging)")
     args = ap.parse_args()
 
     # Start timing
     pipeline_start_time = time.time()
+
+    # Clean artifacts directory unless --no-clean is specified
+    artifacts_dir = Path("artifacts")
+    if not args.no_clean and artifacts_dir.exists():
+        print("🧹 Cleaning artifacts directory to prevent stale data contamination...")
+        shutil.rmtree(artifacts_dir)
+        print("✅ Artifacts directory cleaned")
+    elif args.no_clean:
+        print("⚠️  Skipping artifacts cleanup (--no-clean specified)")
+    
+    # Ensure artifacts directory exists
+    artifacts_dir.mkdir(exist_ok=True)
 
     # Validate inputs
     jd_path = Path(args.jd)
@@ -72,7 +87,10 @@ def main():
     print(f"Base URL: {args.base_url}")
     print()
 
-    # Step 1: Run JD Parser
+    # PHASE 1: JD Analysis
+    print(f"\n📋 PHASE 1: JD Analysis")
+    print(f"Input:  {jd_path}")
+    print(f"Output: artifacts/jd_skills.json")
     jd_cmd = [
         "python3", "jd-parser.py",
         "--jd", str(jd_path),
@@ -81,10 +99,13 @@ def main():
         "--model", args.model
     ]
 
-    if not run_command(jd_cmd, "JD Skills Extraction"):
-        sys.exit("❌ Pipeline failed at JD parsing step")
+    if not run_command(jd_cmd, "Extract skills from job description"):
+        sys.exit("❌ PHASE 1 FAILED: JD Analysis")
 
-    # Step 2: Run Skills Updater
+    # PHASE 2: Skills Update
+    print(f"\n🔧 PHASE 2: Skills Update")
+    print(f"Input:  artifacts/jd_skills.json")
+    print(f"Output: artifacts/skills_updated_block.tex + Resume/skills.tex")
     skills_cmd = [
         "python3", "skills-updater.py",
         "--base-url", args.base_url,
@@ -97,10 +118,13 @@ def main():
     elif args.dry_run:
         skills_cmd.append("--dry-run")
 
-    if not run_command(skills_cmd, "Skills Section Update"):
-        sys.exit("❌ Pipeline failed at skills update step")
+    if not run_command(skills_cmd, "Update technical skills section"):
+        sys.exit("❌ PHASE 2 FAILED: Skills Update")
 
-    # Step 3: Run Summary Updater
+    # PHASE 3: Summary Tailoring  
+    print(f"\n✍️  PHASE 3: Summary Tailoring")
+    print(f"Input:  artifacts/jd_skills.json + current resume summary")
+    print(f"Output: artifacts/summary_updated_block.tex + Resume/*.tex")
     summary_cmd = [
         "python3", "summary-updater.py",
         "--base-url", args.base_url,
@@ -113,29 +137,32 @@ def main():
     elif args.dry_run:
         summary_cmd.append("--dry-run")
 
-    if not run_command(summary_cmd, "Summary Section Update"):
-        sys.exit("❌ Pipeline failed at summary update step")
+    if not run_command(summary_cmd, "Tailor professional summary"):
+        sys.exit("❌ PHASE 3 FAILED: Summary Tailoring")
 
-    # Summary
+    # Pipeline Complete
     print(f"\n{'='*60}")
-    print("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+    print("🎉 ALL 3 PHASES COMPLETED SUCCESSFULLY!")
     print(f"{'='*60}")
+    print("✅ Phase 1: JD Analysis - Skills extracted")
+    print("✅ Phase 2: Skills Update - Technical skills updated") 
+    print("✅ Phase 3: Summary Tailoring - Professional summary tailored")
 
     if args.artifacts_only:
-        print("📁 Generated artifacts:")
-        print("   • artifacts/jd_skills.json")
-        print("   • artifacts/skills_editor_output.json")
-        print("   • artifacts/skills_updated_block.tex")
+        print(f"\n📁 Generated Artifacts:")
+        print("   • artifacts/jd_skills.json (Phase 1 output)")
+        print("   • artifacts/skills_updated_block.tex (Phase 2 output)")
+        print("   • artifacts/summary_updated_block.tex (Phase 3 output)")
         print("\n🔍 Review artifacts before running without --artifacts-only")
     elif args.dry_run:
-        print("🔍 Dry run completed - no files were modified")
+        print(f"\n🔍 Dry run completed - no files were modified")
         print("   Review output above before running without --dry-run")
     else:
-        print("✅ Resume files have been updated!")
-        print("   • skills.tex")
-        print("   • Resume/Conner_Jordan_Software_Engineer.tex")
-        print("   • artifacts/ (backup copies)")
-        print("\n🎯 Skills have been automatically inserted into the main resume!")
+        print(f"\n✅ Resume files updated:")
+        print("   • Resume/Conner_Jordan_Software_Engineer.tex (both skills & summary)")
+        print("   • Resume/skills.tex (skills section)")
+        print("   • artifacts/ (phase outputs preserved)")
+        print("\n🎯 Resume fully tailored for this job description!")
 
     total_time = time.time() - pipeline_start_time
     print(f"\n⏱️  Total pipeline time: {total_time:.1f}s")

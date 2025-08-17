@@ -22,3 +22,22 @@ llm_output.txt
 
 # Test files
 test_*.py
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Documentation builds
+CLEANUP_*.md
+FIXES_*.md
+*_SUMMARY.md
