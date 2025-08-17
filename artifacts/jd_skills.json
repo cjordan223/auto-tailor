@@ -1,44 +1,12 @@
 {
   "job_skills_ranked": [
     {
-      "token": "application security",
-      "canonical": "Application Security (AppSec)",
+      "token": "secure systems",
+      "canonical": "Secure Systems",
       "section": "Security & Operating Systems",
-      "confidence": 1.0,
+      "confidence": 0.9,
       "evidence": [
-        "Lead Security Reviews",
-        "Contribute to Application Security (AppSec) Program Enhancements"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "penetration testing",
-      "canonical": "Penetration Testing",
-      "section": "Security & Operating Systems",
-      "confidence": 1.0,
-      "evidence": [
-        "Execute Penetration Testing",
-        "3+ years of experience in Penetration testing"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "sast",
-      "canonical": "SAST (Static Application Security Testing)",
-      "section": "Security & Operating Systems",
-      "confidence": 1.0,
-      "evidence": [
-        "2+ years of experience with SAST"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "python",
-      "canonical": "Python",
-      "section": "Programming Languages",
-      "confidence": 1.0,
-      "evidence": [
-        "modern high-level programming language like Python"
+        "designing secure systems"
       ],
       "aliases": []
     },
@@ -46,19 +14,9 @@
       "token": "aws",
       "canonical": "AWS",
       "section": "Cloud & DevOps",
-      "confidence": 1.0,
+      "confidence": 0.85,
       "evidence": [
-        "Hands-on experience with cloud-native security best practices across AWS, GCP, and/or Azure"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "gcp",
-      "canonical": "GCP",
-      "section": "Cloud & DevOps",
-      "confidence": 1.0,
-      "evidence": [
-        "Hands-on experience with cloud-native security best practices across AWS, GCP, and/or Azure"
+        "cloud environments (AWS, Azure, GCP)"
       ],
       "aliases": []
     },
@@ -66,9 +24,29 @@
       "token": "azure",
       "canonical": "Azure",
       "section": "Cloud & DevOps",
-      "confidence": 1.0,
+      "confidence": 0.85,
       "evidence": [
-        "Hands-on experience with cloud-native security best practices across AWS, GCP, and/or Azure"
+        "cloud environments (AWS, Azure, GCP)"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "gcp",
+      "canonical": "GCP",
+      "section": "Cloud & DevOps",
+      "confidence": 0.85,
+      "evidence": [
+        "cloud environments (AWS, Azure, GCP)"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "iam",
+      "canonical": "IAM",
+      "section": "Security & Operating Systems",
+      "confidence": 0.9,
+      "evidence": [
+        "identity and access management (IAM)"
       ],
       "aliases": []
     },
@@ -76,72 +54,120 @@
       "token": "encryption",
       "canonical": "Encryption",
       "section": "Security & Operating Systems",
-      "confidence": 1.0,
+      "confidence": 0.85,
       "evidence": [
-        "In-depth knowledge of application security, network security, authentication, authorization, identity systems, encryption"
+        "encryption"
       ],
       "aliases": []
     },
     {
-      "token": "authentication",
-      "canonical": "Authentication (authN)",
+      "token": "sox",
+      "canonical": "SOX",
       "section": "Security & Operating Systems",
-      "confidence": 1.0,
+      "confidence": 0.9,
       "evidence": [
-        "In-depth knowledge of application security, network security, authentication"
+        "regulatory requirements (e.g., NIST, ISO 27001, PCI-DSS, SOX)"
       ],
       "aliases": []
     },
     {
-      "token": "authorization",
-      "canonical": "Authorization (authZ)",
+      "token": "togaf",
+      "canonical": "TOGAF",
       "section": "Security & Operating Systems",
-      "confidence": 1.0,
+      "confidence": 0.85,
       "evidence": [
-        "In-depth knowledge of application security, network security, authentication, authorization"
+        "security standards, frameworks, and methodologies (e.g., NIST, CIS, MITRE ATT&CK, TOGAF)"
       ],
       "aliases": []
     },
     {
-      "token": "identity systems",
-      "canonical": "Identity Systems",
+      "token": "cissp-issap",
+      "canonical": "CISSP-ISSAP",
       "section": "Security & Operating Systems",
-      "confidence": 1.0,
+      "confidence": 0.85,
       "evidence": [
-        "In-depth knowledge of application security, network security, authentication, authorization, identity systems"
+        "advanced certifications such as CISSP-ISSAP"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "sabsa",
+      "canonical": "SABSA",
+      "section": "Security & Operating Systems",
+      "confidence": 0.85,
+      "evidence": [
+        "advanced certifications such as CISSP-ISSAP, SABSA"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "ccsp",
+      "canonical": "CCSP",
+      "section": "Security & Operating Systems",
+      "confidence": 0.85,
+      "evidence": [
+        "advanced certifications such as CISSP-ISSAP, SABSA, CCSP"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "aws security",
+      "canonical": "AWS Security",
+      "section": "Security & Operating Systems",
+      "confidence": 0.85,
+      "evidence": [
+        "advanced certifications such as CISSP-ISSAP, SABSA, CCSP, AWS/Azure Security"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "azure security",
+      "canonical": "Azure Security",
+      "section": "Security & Operating Systems",
+      "confidence": 0.85,
+      "evidence": [
+        "advanced certifications such as CISSP-ISSAP, SABSA, CCSP, AWS/Azure Security"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "giac",
+      "canonical": "GIAC",
+      "section": "Security & Operating Systems",
+      "confidence": 0.85,
+      "evidence": [
+        "advanced certifications such as CISSP-ISSAP, SABSA, CCSP, AWS/Azure Security, or GIAC"
       ],
       "aliases": []
     }
   ],
   "by_section_top3": {
-    "Programming Languages": [
-      "Python"
-    ],
+    "Programming Languages": [],
     "Frontend": [],
     "Backend": [],
     "Cloud & DevOps": [
       "AWS",
-      "GCP",
-      "Azure"
+      "Azure",
+      "GCP"
     ],
     "AI & LLM Tools": [],
     "Security & Operating Systems": [
-      "Application Security (AppSec)",
-      "Penetration Testing",
-      "SAST (Static Application Security Testing)"
+      "Secure Systems",
+      "IAM",
+      "Encryption"
     ],
     "Databases": []
   },
   "skills_flat": [
-    "Application Security (AppSec)",
-    "Penetration Testing",
-    "SAST (Static Application Security Testing)",
-    "Python",
+    "Secure Systems",
+    "IAM",
+    "SOX",
     "AWS",
-    "GCP",
     "Azure",
+    "GCP",
     "Encryption",
-    "Authentication (authN)",
-    "Authorization (authZ)"
+    "TOGAF",
+    "CISSP-ISSAP",
+    "SABSA"
   ]
 }

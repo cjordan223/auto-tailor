@@ -1,0 +1,45 @@
+
+Detection and Response Engineer
+About the job
+Who Are We?Postman is the world’s leading API platform, used by more than 40 million developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle and streamlining collaboration—enabling users to create better APIs, faster.The company is headquartered in San Francisco and has an office in Bangalore, where it was founded. Postman is privately held, with funding from Battery Ventures, BOND, Coatue, CRV, Insight Partners, and Nexus Venture Partners. Learn more at postman.com or connect with Postman on X via @getpostman.P.S: We highly recommend reading The "API-First World" graphic novel to understand the bigger picture and our vision at Postman.The OpportunityWe are seeking an experienced Security Engineer, Detection & Response to join our dynamic security team. In this role, you will provide Level 2 support to our managed Security Operations Center (SOC), monitoring and analyzing security alerts and emerging threats across our corporate, cloud and production environments to identify and respond to potential security incidents and critical vulnerabilities.You’ll work closely with the broader Security and IT team and other engineering teams to develop a strong understanding of our ecosystem to enable you to act effectively as an Incident Commander when required, and coordinate incident resolution with cross-functional teams to ensure 24/7 coverage. This understanding will aid you in your threat hunting and forensic investigations to uncover indicators of compromise and patterns of malicious activity, as well as fine-tune and develop additional detection rules, configurations, custom playbooks and automations tailored to our environment in collaboration with our managed SOC.In the area of vulnerability management, you will monitor security advisories and threat intelligence feeds, and drive automation to strive for containment. Your collaboration with cross-functional teams will be essential in proactively detecting and responding to security threats and ensuring the overall security of our digital assets.What You’ll Do
+* Security Operations Duties:
+    * Provide Level 2 support to a managed SOC and support monitoring security alerts and events from various sources, including corporate tools, WAF, security information and event management (SIEM) systems, and AWS to identify potential security incidents, intrusions and vulnerabilities
+    * Conduct threat hunting and perform forensic investigations to identify indicators of compromise (IOCs) and patterns of malicious activity.
+    * Coordinate and manage incident resolution with cross-functional teams, including acting as Incident Commander during incidents to help provide 24/7 coverage with other team members.
+    * Support Cloud Detection & Response platforms to enable various automated notification and containment workflows.
+* Detection Engineering :
+    * Fine-tune and develop detection rules, configurations, and automations based on new threats, lessons learned, or environmental changes.
+    * Work with the managed SOC to develop custom playbooks.
+    * Where possible, write scripts and develop custom tools to automate the detection and response processes. Adhere to SSDLC best practices when writing scripts or developing tools.
+    * Identify any gaps in logging coverage to ensure we maintain the highest visibility into any threats to our environment
+    * Manage Cloudflare security products for web application security, including WAF rules and DDoS protection.
+    * Collaborate with cross-functional teams to proactively detect and respond to potential security threats and ensure the overall security of our organization's digital assets.
+* Vulnerability Management:
+    * Monitor security advisories, threat intelligence feeds, and vendor updates for critical threats to drive action back into the enterprise/product organization.
+About You
+
+* Education & Experience:
+    * Bachelor’s degree in Computer Science, Information Security, or a related field.
+    * Minimum of 3 years of experience in a SOC analyst or security operations role.
+* Technical Skills:
+    * Proficiency in programming and relevant scripting languages such as Python, JavaScript, Bash, and PowerShell.
+    * Experience with AWS security services and best practices.
+    * Familiarity with Cloudflare, SentinelOne, Okta, and related security tools.
+    * Understanding of network protocols, firewalls, and intrusion detection systems.
+* Soft Skills:
+    * Strong analytical and problem-solving abilities.
+    * Excellent communication skills, both written and verbal.
+    * Ability to work independently and as part of a team.
+Preferred Qualifications
+
+* Certifications such as CISSP, CEH, and AWS Certified Security Specialty.
+* Experience with infrastructure as code tools (e.g., Terraform).
+* Knowledge of DevSecOps practices and CI/CD pipelines.
+* Familiarity with regulatory compliance standards (e.g., GDPR, ISO 27001).
+Coding Requirements
+
+Proficient in either Python or JavaScript (or both) to be able to write/maintain:
+
+* AWS Lambda functions that act as glue between APIs and services
+* Command-line scripts/utilities that aid in incident investigations (e.g., parsing logs, up to and including large datasets)
+

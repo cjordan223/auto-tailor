@@ -63,7 +63,7 @@ def get_llm_response(base_url, api_key, model, prompt):
             "temperature": 0.7,
             "top_p": 0.9,
             "seed": 42,
-            "max_tokens": 2000,
+            "max_tokens": 250,
             "stop": []
         }
 
@@ -80,17 +80,52 @@ def get_llm_response(base_url, api_key, model, prompt):
         sys.exit(f"❌ ERROR: Failed to get response from LLM: {e}")
 
 
+def truncate_to_four_sentences(text):
+    """Ensure summary is exactly 4 sentences, truncating if necessary."""
+    # Clean up the text first
+    text = text.strip()
+    
+    # Split into sentences (handles periods, exclamation marks, question marks)
+    import re
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    
+    # Remove empty sentences
+    sentences = [s.strip() for s in sentences if s.strip()]
+    
+    # If we have more than 4 sentences, truncate to first 4
+    if len(sentences) > 4:
+        print(f"⚠️  Summary had {len(sentences)} sentences, truncating to 4")
+        sentences = sentences[:4]
+    
+    # Join sentences back together
+    result = ' '.join(sentences)
+    
+    # Ensure it ends with proper punctuation
+    if result and not result.endswith(('.', '!', '?')):
+        result += '.'
+    
+    return result
+
+
 def update_tex_file(tex_content, new_block_content):
     # Remove the \n at the start of the block
     new_block_content = new_block_content.strip()
 
+    # Try the new format first (with --- markers)
+    pattern = re.compile(
+        r"(\\section\{PROFESSIONAL SUMMARY\}\s*---\s*\n)(.*?)(\n\s*---\s*\\vspace\{[0-9]+pt\})", re.DOTALL
+    )
+    if pattern.search(tex_content):
+        return pattern.sub(f"\1{new_block_content}\3", tex_content)
+
+    # Fallback to old format (with SUMMARY_BLOCK markers)
     pattern = re.compile(
         r"(% SUMMARY_BLOCK_START\n)(.*?)(\n% SUMMARY_BLOCK_END)", re.DOTALL
     )
-    if not pattern.search(tex_content):
-        sys.exit("❌ ERROR: Could not find SUMMARY_BLOCK_START/END in tex file")
+    if pattern.search(tex_content):
+        return pattern.sub(f"\1{new_block_content}\3", tex_content)
 
-    return pattern.sub(f"\1{new_block_content}\3", tex_content)
+    sys.exit("❌ ERROR: Could not find summary section in resume file")
 
 
 def main():
@@ -136,11 +171,18 @@ def main():
     resume_content = read_file_content(resume_file_path)
 
     # Extract original summary
+    # Try the new format first (with --- markers)
     original_summary_match = re.search(
-        r"% SUMMARY_BLOCK_START\n(.*)\n% SUMMARY_BLOCK_END", resume_content, re.DOTALL
+        r"\\section\{PROFESSIONAL SUMMARY\}\s*---\s*\n(.*?)\n\s*---\s*\\vspace\{[0-9]+pt\}", resume_content, re.DOTALL
     )
     if not original_summary_match:
-        sys.exit("❌ ERROR: Could not find summary block in resume file")
+        # Fallback to old format (with SUMMARY_BLOCK markers)
+        original_summary_match = re.search(
+            r"% SUMMARY_BLOCK_START\n(.*)\n% SUMMARY_BLOCK_END", resume_content, re.DOTALL
+        )
+        if not original_summary_match:
+            sys.exit("❌ ERROR: Could not find summary block in resume file")
+
     original_summary = original_summary_match.group(1).strip()
 
     # Create prompt
@@ -162,6 +204,8 @@ def main():
     - Maintain a professional and confident tone.
     - The revised summary should be a natural evolution of the original, not a complete rewrite.
     - Make the changes subtle, so it's not obvious it was tailored.
+    - CRITICAL: The revised summary must be exactly 4 sentences and between 70-90 words total.
+    - CRITICAL: Be concise and impactful - every word must add value.
     - Output ONLY the revised summary text, without any preamble or explanation.
     """
 
@@ -170,6 +214,11 @@ def main():
     revised_summary = get_llm_response(
         args.base_url, get_api_key(args.api_key), args.model, prompt)
     print("✅ LLM response received.")
+    
+    # Ensure summary is exactly 4 sentences
+    revised_summary = truncate_to_four_sentences(revised_summary)
+    word_count = len(revised_summary.split())
+    print(f"📏 Summary validated: 4 sentences, {word_count} words")
 
     # Save artifacts
     write_file_content(
