@@ -35,7 +35,11 @@ import asyncio
 DEFAULT_BASE_URL = "http://127.0.0.1:1234/v1"
 DEFAULT_API_KEY = "lm-studio"
 DEFAULT_MODEL = "qwen2.5-32b-instruct"
-TIMEOUT_S = 1800  # 30 minutes timeout for LLM requests
+TIMEOUT_S = 300  # Reduced from 1800 to 5 minutes for better UX
+
+# Connection pooling for better performance
+CONNECTION_LIMIT = 10
+CONNECTION_TIMEOUT = 30  # 30 seconds for connection establishment
 
 # LLM generation parameters for deterministic results
 GEN_OPTIONS = {
@@ -223,6 +227,31 @@ def cap_to_n_skills(ranked: List[Dict[str, Any]], n: int = 10) -> List[Dict[str,
     return ranked_sorted[:n]
 
 
+# Global session for connection pooling
+_session = None
+
+
+async def get_session():
+    """Get or create aiohttp session with connection pooling"""
+    global _session
+    if _session is None or _session.closed:
+        connector = aiohttp.TCPConnector(
+            limit=CONNECTION_LIMIT,
+            limit_per_host=CONNECTION_LIMIT,
+            ttl_dns_cache=300,
+            use_dns_cache=True
+        )
+        timeout = aiohttp.ClientTimeout(
+            total=TIMEOUT_S,
+            connect=CONNECTION_TIMEOUT
+        )
+        _session = aiohttp.ClientSession(
+            connector=connector,
+            timeout=timeout
+        )
+    return _session
+
+
 async def chat_once(base_url: str, api_key: str, model: str,
                     messages: List[Dict[str, str]], options: Dict[str, Any]) -> str:
     url = f"{base_url}/chat/completions"
@@ -236,15 +265,14 @@ async def chat_once(base_url: str, api_key: str, model: str,
         "stop": options.get("stop", []),
         "stream": False  # Disable streaming to avoid parsing issues
     }
-    timeout = aiohttp.ClientTimeout(total=TIMEOUT_S)
 
     try:
-        async with aiohttp.ClientSession(timeout=timeout) as sess:
-            async with sess.post(url, headers={"Authorization": f"Bearer {api_key}"},
-                                 json=payload) as r:
-                r.raise_for_status()
-                response = await r.json()
-                return response['choices'][0]['message']['content']
+        session = await get_session()
+        async with session.post(url, headers={"Authorization": f"Bearer {api_key}"},
+                                json=payload) as r:
+            r.raise_for_status()
+            response = await r.json()
+            return response['choices'][0]['message']['content']
     except Exception as e:
         print(f"LLM call failed: {e}", file=sys.stderr)
         # Fallback to existing output if available
@@ -315,12 +343,14 @@ def coerce_json(s: str) -> Any:
     if json_objects:
         # If we found multiple JSON objects, prefer the most complete one
         if len(json_objects) > 1:
-            print(f"Warning: LLM returned {len(json_objects)} JSON objects, selecting the most complete one", file=sys.stderr)
-            
+            print(
+                f"Warning: LLM returned {len(json_objects)} JSON objects, selecting the most complete one", file=sys.stderr)
+
             # Score each object based on required fields
             def score_json_object(obj):
                 score = 0
-                required_fields = ['job_skills_ranked', 'by_section_top3', 'key_responsibilities']
+                required_fields = ['job_skills_ranked',
+                                   'by_section_top3', 'key_responsibilities']
                 for field in required_fields:
                     if field in obj and obj[field]:
                         score += 1
@@ -328,12 +358,13 @@ def coerce_json(s: str) -> Any:
                             # Extra points for having section data
                             score += len([v for v in obj[field].values() if v])
                 return score
-            
+
             # Find the object with the highest score
             best_object = max(json_objects, key=score_json_object)
             best_score = score_json_object(best_object)
-            
-            print(f"Selected JSON object with score {best_score} out of {len(json_objects)} candidates", file=sys.stderr)
+
+            print(
+                f"Selected JSON object with score {best_score} out of {len(json_objects)} candidates", file=sys.stderr)
             return best_object
         else:
             return json_objects[0]
@@ -341,8 +372,9 @@ def coerce_json(s: str) -> Any:
     # Check if the response looks truncated
     if s.count('{') > s.count('}'):
         print("Error: LLM response appears to be truncated (unbalanced braces)", file=sys.stderr)
-        print(f"Found {s.count('{')} opening braces but only {s.count('}')} closing braces", file=sys.stderr)
-    
+        print(
+            f"Found {s.count('{')} opening braces but only {s.count('}')} closing braces", file=sys.stderr)
+
     # Look for partial JSON structure that might be recoverable
     if '"job_skills_ranked"' in s and '"key_responsibilities"' in s:
         print("Error: Response contains expected fields but JSON structure is malformed", file=sys.stderr)
@@ -364,6 +396,8 @@ async def main():
     ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--cap", type=int, default=10,
                     help="Max skills to return in the flat list")
+    ap.add_argument("--no-cache", action="store_true",
+                    help="Disable caching for this request")
     args = ap.parse_args()
 
     jd_path = Path(args.jd)
@@ -371,14 +405,38 @@ async def main():
         sys.exit(f"ERROR: JD file not found: {jd_path}")
     jd_text = jd_path.read_text(encoding="utf-8").strip()
 
-    resp = await chat_once(
-        args.base_url, args.api_key, args.model,
-        [
-            {"role": "system", "content": JD_EXTRACTOR_SYSTEM},
-            {"role": "user", "content": jd_text},
-        ],
-        GEN_OPTIONS
-    )
+    # Check cache first (unless disabled)
+    resp = None
+    cache_key = f"{jd_text}|{args.model}|{JD_EXTRACTOR_SYSTEM}"
+    
+    if not args.no_cache:
+        try:
+            from cache_manager import get_cached_llm_response, cache_llm_response
+            resp = get_cached_llm_response(cache_key)
+            if resp:
+                print("🚀 Using cached LLM response", file=sys.stderr)
+        except ImportError:
+            print("Cache manager not available, proceeding without cache", file=sys.stderr)
+    
+    # If no cached response, make LLM call
+    if not resp:
+        print("⚙️ Making LLM request (no cache hit)", file=sys.stderr)
+        resp = await chat_once(
+            args.base_url, args.api_key, args.model,
+            [
+                {"role": "system", "content": JD_EXTRACTOR_SYSTEM},
+                {"role": "user", "content": jd_text},
+            ],
+            GEN_OPTIONS
+        )
+        
+        # Cache the response (unless disabled)
+        if not args.no_cache:
+            try:
+                cache_llm_response(cache_key, resp)
+                print("💾 Cached LLM response", file=sys.stderr)
+            except:
+                print("Failed to cache LLM response", file=sys.stderr)
 
     try:
         raw = coerce_json(resp)

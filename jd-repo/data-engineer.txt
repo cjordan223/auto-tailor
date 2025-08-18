@@ -1,0 +1,40 @@
+About the role:
+
+As a Data Engineer on the Data Analytics team, you will play a pivotal role in building and maintaining robust, reliable, and scalable data infrastructure. This position is critical for ensuring our data infrastructure keeps pace with our analytical needs, especially as Human Interest scales to meet the demands of a rapidly growing company. You will contribute to improving our data foundation, and future-proofing our capabilities for advanced analytics and analytics self-service.
+
+About the Data Analytics team:
+
+The Data Analytics team currently consists of Data Analysts focused on analytics engineering, complex data analysis, and data science. This role will be embedded directly within the Data Analytics team, with lines of mentorship to the decentralized data engineers who helped build the analytics infrastructure to where it is today. You will have the opportunity to mentor analysts desiring to work further upstream in the data stack, and learn from their domain expertises, contributing to a collaborative and growth-oriented environment positioned to have great business impact.
+
+What you get to do everyday:
+
+    Build and optimize data models in dbt Core to create reliable, efficient, and accessible data for downstream reporting and analysis, with a strong understanding of end-user needs.
+    Design, develop, and maintain scalable data ingestion and orchestration using Meltano, Snowpipe, Airflow and other tools. 
+    Manage and automate data infrastructure in AWS using Terraform.
+    Collaborate with Data Analysts and Software Engineers to clarify data requirements and translate them into effective data engineering solutions.
+    Proactively identify and implement improvements in data orchestration, cost/performance management, and security within Snowflake.
+    Develop new data ingestion pipelines from various source systems into Snowflake, including full-stack development for brand-new pipelines from ingestion to data modeling of core user-facing tables.
+    Implement efficient testing within dbt to detect system changes and ensure data quality, contributing to the operational health of the data platform.
+
+What you bring to the role:
+
+Base Qualifications:
+
+    3+ years experience as a Data Engineer with a strong focus on data pipeline development and data warehousing, consistently delivering high-quality work on a timely basis.
+    Strong hands-on experience with data modeling,  knowledgeable about general design patterns and architectural approaches.
+    Hands-on experience with cloud data warehouses.
+    Strong Python and SQL skills and experience with data manipulation and analysis, capable of quickly absorbing and synthesizing complex information.
+    Experience with data ingestion tools and ETL/ELT processes.
+    Experience with Airflow.
+    A proactive mindset to keep an eye out for areas to improve our data infrastructure.
+    Ability to independently define projects, clarify requirements while considering solutions with the help of mentorship for complex projects.
+    Excellent problem-solving skills and attention to detail, with a high-level understanding of how downstream users leverage data.
+
+Nice to have:
+
+    Experience in Terraform or other infrastructure as code tools
+    Understanding of data security governance best practices and techniques
+    Experience with DBT
+    Experience with Snowflake
+    Experience with Meltano
+    Experience curating data and data pipelines for the consumption of large language models

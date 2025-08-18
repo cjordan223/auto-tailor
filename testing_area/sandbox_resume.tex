@@ -1,0 +1,163 @@
+% Resume in LaTeX — One Page
+% Author : Conner Jordan (modified)
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,10pt]{article}
+
+% Basics
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{microtype}
+
+% Fonts
+\usepackage{CormorantGaramond}
+\usepackage{charter}
+
+% Colors
+\usepackage{xcolor}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\colorlet{heading}{black}
+\colorlet{emphasis}{SlateGrey}
+
+% Layout — optimized for one page
+\usepackage[margin=0.35in, top=0.08in, bottom=0.35in]{geometry}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\tabcolsep}{1pt}
+\linespread{0.88}
+\microtypesetup{protrusion=true,expansion=true}
+
+% Item spacing (tightened for one page)
+\setlist[itemize]{leftmargin=0.11in, topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=1pt}
+
+% Section style
+\titleformat{\section}
+  {\large\bfseries\scshape\raggedright\color{heading}}
+  {}{0em}{}[\titlerule \vspace{-4pt}]
+\titlespacing*{\section}{0pt}{2pt}{0pt}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+
+\pdfgentounicode=1
+
+% Convenience commands
+\newcommand{\resumeItem}[1]{\item\small{#1}}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0in,label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2pt}}
+
+\newcommand{\resumeSubheading}[4]{%
+  \vspace{-2pt}\item
+  \begin{tabular*}{\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{\large #1} & \textbf{\small #2} \\
+    \textit{\large #3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-2pt}
+}
+
+%-------------------------------------
+\begin{document}
+
+% Header
+\begin{center}
+  {\Huge \textbf{Conner Jordan}}\[0pt]
+  {\Large Software Engineer}\[2pt]
+  \href{tel:+18059759793}{\faPhone\ +1 (805) 975-9793} \,\, \href{mailto:connercharlesjordan@gmail.com}{\faEnvelope\ connercharlesjordan@gmail.com} \,\, \faMapMarker\ San Luis Obispo, CA \[-2pt]
+  \href{https://www.linkedin.com/in/conner-jordan-4b268514a/}{\faLinkedin\ linkedin.com/in/conner-jordan-4b268514a} \,\, \href{https://github.com/cjordan223}{\faGithub\ github.com/cjordan223} \,\, \href{https://connerjordan.com/}{\faGlobe\ connerjordan.com}
+\end{center}
+
+\vspace{4pt}  % ADJUSTABLE: Increase to 6pt or 8pt for more space after header
+
+% SUMMARY
+% SUMMARY_BLOCK_START
+A Developer Advocate with experience building and explaining technical AI products. Passionate about creating technical resources, demos, and educational content to help developers succeed. Adept at diving deep into code, explaining complex workflows, and acting as a bridge between product teams and the developer community.
+% SUMMARY_BLOCK_END
+\vspace{8pt}
+
+% EDUCATION
+\section{EDUCATION}
+\vspace{8pt}  % ADJUSTABLE: Increase to 10pt or 12pt for more space after section title
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {California State University - Monterey Bay}{December 2024}
+    {B.S., Computer Science}{}
+  \item \small{\textit{Capstone Award for Innovation (2024)}}
+\resumeSubHeadingListEnd
+\vspace{6pt}  % ADJUSTABLE: Increase to 8pt or 10pt for more space before next section
+
+\vspace{6pt}  % ADJUSTABLE: Increase to 8pt or 10pt for more space before next section
+% EXPERIENCE
+\section{WORK EXPERIENCE}
+\vspace{8pt}  % SAFE: Space after section title
+\resumeSubHeadingListStart
+
+\resumeSubheading
+  {University of California}{Oakland, CA (Remote)}
+  {Security Engineer}{March 2025 - Present}
+  \vspace{2pt}
+\resumeItemListStart
+  \resumeItem{Contributed to the development and maintenance of computer systems and projects, supporting a systemwide cybersecurity and compliance initiative, focusing on developer needs.} 
+  \resumeItem{Assisted with the design and implementation of system security and data assurance, identifying security risks and developing remediation scripts, while engaging with the developer community.} 
+  \resumeItem{Improved threat visibility and SecOps response through real-time database and asset data aggregation, coordinating technical and engineering efforts, ensuring solutions meet developer requirements.} 
+  \resumeItem{Automated asset tracking and compliance monitoring, reducing manual workload and improving coverage across multiple operating systems, ensuring systems are built to specs and best practices, with a focus on developer experience.} 
+  \resumeItem{Coordinated with IT teams to align endpoint security practices with compliance standards, streamlining reporting, and improving interdepartmental collaboration in a cloud computing environment, advocating for developer-friendly solutions.} 
+\resumeItemListEnd
+\vspace{6pt}
+
+\resumeSubheading
+  {Great Wolf Resorts}{Chicago Corporate Office (Remote)}
+  {Security Support Engineer}{May 2023 - March 2025}
+\vspace{2pt}
+\resumeItemListStart
+  \resumeItem{Developed and maintained automation scripts for hybrid Azure tenant management, ensuring compliance with technical standards for server and storage environments, contributing to developer tooling.} 
+  \resumeItem{Automated security certificate deployments, preventing service disruptions and reducing manual interventions annually, providing support for complex IT infrastructures, ensuring developer workflows are seamless.} 
+  \resumeItem{Engineered a PowerShell interface for managing distribution lists, eliminating human error and reducing annual manual workload, supporting the design and implementation of systems, focusing on developer self-service.} 
+  \resumeItem{Built SQL log query frameworks, creating dynamic visualizations to detect suspicious behavior and inform executive decisions on security posture, ensuring systems allow all components to work properly together, enhancing developer insights.} 
+  \resumeItem{Led security awareness campaigns, developing custom Python tools to analyze phishing simulation data, transforming raw metrics into actionable insights that improved employee compliance rates, while building relationships with AI thought leaders.} 
+\resumeItemListEnd
+\vspace{6pt}
+\resumeSubheading
+  {Simple.biz}{Durham, NC (Remote)}
+  {Freelance Web Developer}{August 2022 - May 2023}
+\vspace{2pt}
+\resumeItemListStart
+  \resumeItem{Delivered production-ready websites with optimized performance and SEO enhancements, incorporating automation scripts for build processes that improved search rankings and client visibility, aligning with developer best practices.} 
+  \resumeItem{Implemented WCAG/ADA compliance guidelines through automated testing tools like Selenium, ensuring inclusive web applications and boosting usability scores while reducing accessibility-related issues, focusing on developer empowerment.} 
+  \resumeItem{Conducted cross-browser/device compatibility testing with scripted automation, resolving discrepancies and achieving a 30\% decrease in user-reported issues across platforms, demonstrating an understanding of developer tooling.} 
+\resumeItemListEnd
+\vspace{6pt}
+\resumeSubHeadingListEnd
+\vspace{8pt}
+
+% SKILLS
+\section{TECHNICAL SKILLS}
+\resumeSubHeadingListStart
+\item \small{\renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} p{3.5cm} >{\raggedright\arraybackslash}X @{}}
+    \textbf{Programming Languages:} & Python, TypeScript \\
+    \textbf{AI/ML Tools:} & TensorFlow, PyTorch, scikit-learn \\
+    \textbf{LLM Models:} & GPT, BERT, Llama \\
+    \textbf{Cloud:} & AWS, Azure, GCP \\
+    \textbf{Developer Tooling:} & Docker, Kubernetes, CI/CD \\
+    \textbf{Creating Demos:} & Developing and presenting compelling demos for technical audiences
+    \end{tabularx}}
+\resumeSubHeadingListEnd
+\vspace{8pt}
+
+% CERTIFICATIONS
+\section{CERTIFICATIONS}
+\resumeSubHeadingListStart
+\vspace{10pt}
+\item \small{\textbf{AWS Certified Cloud Practitioner} \hfill \textit{January 2025}}
+\resumeSubHeadingListEnd
+
+\end{document}

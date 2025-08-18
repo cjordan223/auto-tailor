@@ -1,4 +1,33 @@
 {
+  "skills_flat": [
+    "DBT Core",
+    "Meltano",
+    "Snowpipe",
+    "Airflow",
+    "Terraform",
+    "SQL",
+    "Snowflake",
+    "Python"
+  ],
+  "by_section_top3": {
+    "Programming Languages": [
+      "Python"
+    ],
+    "Backend": [
+      "DBT Core",
+      "Meltano",
+      "Snowpipe"
+    ],
+    "Cloud & DevOps": [
+      "Airflow",
+      "Terraform"
+    ],
+    "Databases": [
+      "SQL",
+      "Snowflake"
+    ]
+  },
+  "categorized": {},
   "job_skills_ranked": [
     {
       "token": "python",
@@ -6,112 +35,69 @@
       "section": "Programming Languages",
       "confidence": 0.9,
       "evidence": [
-        "Proficiency in Python and TypeScript; able to prototype and ship small projects quickly."
+        "Strong Python and SQL skills"
       ],
       "aliases": []
     },
     {
-      "token": "typescript",
-      "canonical": "TypeScript",
-      "section": "Programming Languages",
+      "token": "sql",
+      "canonical": "SQL",
+      "section": "Databases",
       "confidence": 0.9,
       "evidence": [
-        "Proficiency in Python and TypeScript; able to prototype and ship small projects quickly."
+        "Strong Python and SQL skills"
       ],
       "aliases": []
     },
     {
-      "token": "ai ml tools",
-      "canonical": "AI/ML Tools",
-      "section": "AI & LLM Tools",
-      "confidence": 0.8,
-      "evidence": [
-        "Hands-on experience with AI/ML tools, agents, and infrastructure across the stack."
-      ],
-      "aliases": []
-    },
-    {
-      "token": "llm models",
-      "canonical": "LLM Models",
-      "section": "AI & LLM Tools",
-      "confidence": 0.8,
-      "evidence": [
-        "Experience with the latest LLM models, and AI tools and frameworks."
-      ],
-      "aliases": []
-    },
-    {
-      "token": "sample code",
-      "canonical": "Sample Code",
+      "token": "dbt core",
+      "canonical": "DBT Core",
       "section": "Backend",
-      "confidence": 0.7,
+      "confidence": 0.85,
       "evidence": [
-        "Develop and maintain sample code, reference apps, and SDK enhancements that help developers get started quickly."
+        "Build and optimize data models in dbt Core"
       ],
       "aliases": []
     },
     {
-      "token": "sdk enhancements",
-      "canonical": "SDK Enhancements",
-      "section": "Backend",
-      "confidence": 0.7,
-      "evidence": [
-        "Develop and maintain sample code, reference apps, and SDK enhancements that help developers get started quickly."
-      ],
-      "aliases": []
-    },
-    {
-      "token": "technical content",
-      "canonical": "Technical Content",
-      "section": "Automation & Productivity",
-      "confidence": 0.6,
-      "evidence": [
-        "You’ll spend most of your time designing and delivering technical content: blog posts, tutorials, videos, sample apps."
-      ],
-      "aliases": []
-    },
-    {
-      "token": "github profile",
-      "canonical": "GitHub Profile",
+      "token": "airflow",
+      "canonical": "Airflow",
       "section": "Cloud & DevOps",
-      "confidence": 0.5,
+      "confidence": 0.9,
       "evidence": [
-        "An active Github profile is a must."
+        "Experience with Airflow."
+      ],
+      "aliases": []
+    },
+    {
+      "token": "terraform",
+      "canonical": "Terraform",
+      "section": "Cloud & DevOps",
+      "confidence": 0.85,
+      "evidence": [
+        "Manage and automate data infrastructure in AWS using Terraform"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "snowflake",
+      "canonical": "Snowflake",
+      "section": "Databases",
+      "confidence": 0.9,
+      "evidence": [
+        "Experience with Snowflake"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "meltano",
+      "canonical": "Meltano",
+      "section": "Backend",
+      "confidence": 0.85,
+      "evidence": [
+        "Design, develop, and maintain scalable data ingestion and orchestration using Meltano"
       ],
       "aliases": []
     }
-  ],
-  "by_section_top3": {
-    "Programming Languages": [
-      "Python",
-      "TypeScript"
-    ],
-    "Frontend": [],
-    "Backend": [
-      "Sample Code",
-      "SDK Enhancements"
-    ],
-    "Cloud & DevOps": [
-      "GitHub Profile"
-    ],
-    "AI & LLM Tools": [
-      "LLM Models",
-      "AI/ML Tools"
-    ],
-    "Automation & Productivity": [
-      "Technical Content"
-    ],
-    "Security & Operating Systems": [],
-    "Databases": []
-  },
-  "skills_flat": [
-    "Python",
-    "TypeScript",
-    "AI/ML Tools",
-    "LLM Models",
-    "Sample Code",
-    "SDK Enhancements",
-    "Technical Content",
-    "GitHub Profile"
   ]
 }

@@ -55,6 +55,52 @@ class ResumeWizard {
         processBtn.disabled = true;
         processBtn.innerHTML = '<span class="spinner"></span>Processing...';
         
+        // Try async processing first, fall back to sync if needed
+        const useAsync = true; // Could be a user preference
+        
+        if (useAsync) {
+            await this.handleAsyncProcessing(jobDescription, processBtn);
+        } else {
+            await this.handleSyncProcessing(jobDescription, processBtn);
+        }
+    }
+
+    async handleAsyncProcessing(jobDescription, processBtn) {
+        this.showStatus('🚀 Starting background processing...', 'info');
+
+        try {
+            // Submit for async processing
+            const response = await fetch('/process-jd-async', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ job_description: jobDescription })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    this.showStatus('⏳ Processing in background... Please wait', 'info');
+                    
+                    // Start polling for task completion
+                    await this.pollTaskStatus(result.task_id, processBtn);
+                } else {
+                    this.showStatus(`❌ Error: ${result.error}`, 'error');
+                    this.resetProcessButton(processBtn);
+                }
+            } else {
+                // Fall back to sync processing
+                this.showStatus('⚠️ Async processing unavailable, using standard processing...', 'warning');
+                await this.handleSyncProcessing(jobDescription, processBtn);
+            }
+        } catch (error) {
+            this.showStatus(`❌ Network error: ${error.message}`, 'error');
+            this.resetProcessButton(processBtn);
+        }
+    }
+
+    async handleSyncProcessing(jobDescription, processBtn) {
         this.showStatus('Processing job description and extracting skills...', 'info');
 
         try {
@@ -69,16 +115,7 @@ class ResumeWizard {
             if (response.ok) {
                 const result = await response.json();
                 if (result.success) {
-                    this.showStatus(`✅ Success! Extracted ${result.skills_count} relevant skills.`, 'success');
-                    
-                    // Store results
-                    this.processingResults = result;
-                    this.extractedSkills = result.skills;
-                    
-                    // Display extracted skills and move to step 2
-                    this.displaySkillsForReview(result.skills);
-                    await this.generateProfessionalSummary();
-                    this.goToStep(2);
+                    await this.handleProcessingSuccess(result);
                 } else {
                     this.showStatus(`❌ Error: ${result.error}`, 'error');
                 }
@@ -89,9 +126,97 @@ class ResumeWizard {
         } catch (error) {
             this.showStatus(`❌ Network error: ${error.message}`, 'error');
         } finally {
-            processBtn.disabled = false;
-            processBtn.innerHTML = '<i class="bi bi-gear"></i> Process Job Description';
+            this.resetProcessButton(processBtn);
         }
+    }
+
+    async pollTaskStatus(taskId, processBtn) {
+        const maxAttempts = 120; // 10 minutes with 5-second intervals
+        let attempts = 0;
+        
+        const checkStatus = async () => {
+            try {
+                const response = await fetch(`/task-status/${taskId}`);
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        const status = result.status;
+                        const progress = result.progress || 0;
+                        
+                        // Update UI based on status
+                        if (status === 'running') {
+                            processBtn.innerHTML = `<span class="spinner"></span>Processing... ${Math.round(progress)}%`;
+                            this.showStatus(`⚙️ Processing: ${Math.round(progress)}% complete`, 'info');
+                        } else if (status === 'completed') {
+                            // Task completed successfully
+                            const skills = result.skills || result.result;
+                            const skillsCount = result.skills_count || (skills ? skills.skills_flat?.length || 0 : 0);
+                            
+                            await this.handleProcessingSuccess({
+                                success: true,
+                                skills_count: skillsCount,
+                                skills: skills,
+                                download_id: `async_${taskId}` // Create a pseudo download ID
+                            });
+                            this.resetProcessButton(processBtn);
+                            return;
+                        } else if (status === 'failed') {
+                            this.showStatus(`❌ Processing failed: ${result.error || 'Unknown error'}`, 'error');
+                            this.resetProcessButton(processBtn);
+                            return;
+                        } else if (status === 'pending') {
+                            processBtn.innerHTML = '<span class="spinner"></span>Queued...';
+                            this.showStatus('📋 Task queued for processing...', 'info');
+                        }
+                        
+                        // Continue polling if still processing
+                        attempts++;
+                        if (attempts < maxAttempts) {
+                            setTimeout(checkStatus, 5000); // Check every 5 seconds
+                        } else {
+                            this.showStatus('❌ Processing timed out. Please try again.', 'error');
+                            this.resetProcessButton(processBtn);
+                        }
+                    } else {
+                        this.showStatus(`❌ Error checking status: ${result.error}`, 'error');
+                        this.resetProcessButton(processBtn);
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error polling task status:', error);
+                attempts++;
+                if (attempts < maxAttempts) {
+                    setTimeout(checkStatus, 5000);
+                } else {
+                    this.showStatus('❌ Lost connection to server. Please refresh and try again.', 'error');
+                    this.resetProcessButton(processBtn);
+                }
+            }
+        };
+        
+        // Start polling immediately
+        setTimeout(checkStatus, 1000);
+    }
+
+    async handleProcessingSuccess(result) {
+        this.showStatus(`✅ Success! Extracted ${result.skills_count} relevant skills.`, 'success');
+        
+        // Store results
+        this.processingResults = result;
+        this.extractedSkills = result.skills;
+        
+        // Display extracted skills and move to step 2
+        this.displaySkillsForReview(result.skills);
+        await this.generateProfessionalSummary();
+        this.goToStep(2);
+    }
+
+    resetProcessButton(processBtn) {
+        processBtn.disabled = false;
+        processBtn.innerHTML = '<i class="bi bi-gear"></i> Process Job Description';
     }
 
     displaySkillsForReview(skills) {

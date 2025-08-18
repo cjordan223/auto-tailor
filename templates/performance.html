@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Dashboard - JD Parser</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .metric-card {
+            transition: transform 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+        .health-good { color: #28a745; }
+        .health-warning { color: #ffc107; }
+        .health-critical { color: #dc3545; }
+        .health-unknown { color: #6c757d; }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-speedometer2"></i> Performance Dashboard
+                    </h1>
+                    <div>
+                        <a href="/" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left"></i> Back to Main
+                        </a>
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <p class="text-muted">Real-time system performance metrics and analytics</p>
+            </div>
+        </div>
+
+        <!-- System Health Overview -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-heart-pulse"></i> System Health Overview
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="systemHealth">
+                            <!-- System health metrics will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="row mb-4">
+            <!-- Response Times -->
+            <div class="col-lg-6 mb-4">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-clock"></i> Response Times
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="responseTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cache Performance -->
+            <div class="col-lg-6 mb-4">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-database"></i> Cache Performance
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="cacheChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Queue & Errors -->
+        <div class="row mb-4">
+            <!-- Task Queue Status -->
+            <div class="col-lg-8 mb-4">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-task"></i> Task Queue Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="taskQueueStatus">
+                            <!-- Task queue metrics will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Summary -->
+            <div class="col-lg-4 mb-4">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-exclamation-triangle"></i> Error Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="errorSummary">
+                            <!-- Error summary will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Resources -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-cpu"></i> System Resources
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="systemResourcesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Recommendations -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card metric-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lightbulb"></i> Performance Recommendations
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recommendations">
+                            <!-- Recommendations will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating refresh button -->
+    <button class="btn btn-primary btn-lg rounded-circle refresh-btn" onclick="refreshData()" title="Refresh Data">
+        <i class="bi bi-arrow-clockwise"></i>
+    </button>
+
+    <script>
+        let charts = {};
+
+        // Initialize charts
+        function initializeCharts() {
+            // Response Time Chart
+            const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+            charts.responseTime = new Chart(responseTimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Average Response Time (seconds)',
+                        data: [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Seconds'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Cache Performance Chart
+            const cacheCtx = document.getElementById('cacheChart').getContext('2d');
+            charts.cache = new Chart(cacheCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cache Hits', 'Cache Misses'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // System Resources Chart
+            const systemCtx = document.getElementById('systemResourcesChart').getContext('2d');
+            charts.system = new Chart(systemCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'CPU Usage (%)',
+                        data: [],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Memory Usage (%)',
+                        data: [],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Percentage'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update system health display
+        function updateSystemHealth(data) {
+            const healthDiv = document.getElementById('systemHealth');
+            const health = data.current?.system_health || {};
+            
+            const healthCards = [
+                {
+                    title: 'Overall Health',
+                    value: health.overall || 'unknown',
+                    icon: 'heart-pulse',
+                    color: getHealthColor(health.overall)
+                },
+                {
+                    title: 'CPU Health',
+                    value: health.cpu || 'unknown',
+                    icon: 'cpu',
+                    color: getHealthColor(health.cpu)
+                },
+                {
+                    title: 'Memory Health',
+                    value: health.memory || 'unknown',
+                    icon: 'memory',
+                    color: getHealthColor(health.memory)
+                }
+            ];
+
+            healthDiv.innerHTML = healthCards.map(card => `
+                <div class="col-md-4">
+                    <div class="text-center p-3">
+                        <i class="bi bi-${card.icon} fs-1 ${card.color}"></i>
+                        <h6 class="mt-2">${card.title}</h6>
+                        <span class="badge bg-${getHealthBadge(card.value)}">${card.value.toUpperCase()}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update task queue status
+        function updateTaskQueue(data) {
+            const taskDiv = document.getElementById('taskQueueStatus');
+            const tasks = data.current?.tasks || {};
+            
+            const taskMetrics = [
+                {
+                    title: 'Total Tasks',
+                    value: tasks.total_tasks || 0,
+                    icon: 'list-task',
+                    color: 'primary'
+                },
+                {
+                    title: 'Pending',
+                    value: tasks.by_status?.pending || 0,
+                    icon: 'clock',
+                    color: 'warning'
+                },
+                {
+                    title: 'Running',
+                    value: tasks.by_status?.running || 0,
+                    icon: 'play-circle',
+                    color: 'info'
+                },
+                {
+                    title: 'Completed',
+                    value: tasks.by_status?.completed || 0,
+                    icon: 'check-circle',
+                    color: 'success'
+                },
+                {
+                    title: 'Failed',
+                    value: tasks.by_status?.failed || 0,
+                    icon: 'x-circle',
+                    color: 'danger'
+                }
+            ];
+
+            taskDiv.innerHTML = taskMetrics.map(metric => `
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="text-center p-2">
+                        <i class="bi bi-${metric.icon} fs-2 text-${metric.color}"></i>
+                        <h6 class="mt-1">${metric.title}</h6>
+                        <h4 class="text-${metric.color}">${metric.value}</h4>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update error summary
+        function updateErrorSummary(data) {
+            const errorDiv = document.getElementById('errorSummary');
+            const errors = data.current?.errors || {};
+            
+            if (Object.keys(errors).length === 0) {
+                errorDiv.innerHTML = '<p class="text-success"><i class="bi bi-check-circle"></i> No errors detected</p>';
+                return;
+            }
+
+            const errorList = Object.entries(errors).map(([operation, count]) => `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-truncate">${operation}</span>
+                    <span class="badge bg-danger">${count}</span>
+                </div>
+            `).join('');
+
+            errorDiv.innerHTML = errorList;
+        }
+
+        // Update recommendations
+        function updateRecommendations(data) {
+            const recDiv = document.getElementById('recommendations');
+            const summary = data.summary || {};
+            
+            // Generate recommendations based on data
+            const recommendations = [];
+            
+            // Check response times
+            const responseTimes = summary.avg_response_times || {};
+            Object.entries(responseTimes).forEach(([operation, times]) => {
+                if (times.avg > 30) {
+                    recommendations.push(`Optimize ${operation} - average response time is ${times.avg.toFixed(1)}s`);
+                }
+            });
+
+            // Check cache hit rate
+            const cacheHitRate = summary.cache_hit_rate || 0;
+            if (cacheHitRate < 0.5) {
+                recommendations.push(`Low cache hit rate (${(cacheHitRate * 100).toFixed(1)}%) - consider expanding cache coverage`);
+            }
+
+            // Check error rates
+            const totalErrors = Object.values(summary.error_summary || {}).reduce((a, b) => a + b, 0);
+            if (totalErrors > 10) {
+                recommendations.push(`High error rate detected (${totalErrors} errors) - review error logs`);
+            }
+
+            if (recommendations.length === 0) {
+                recommendations.push('System performance is within normal parameters');
+            }
+
+            recDiv.innerHTML = recommendations.map(rec => `
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> ${rec}
+                </div>
+            `).join('');
+        }
+
+        // Update charts
+        function updateCharts(data) {
+            // Update response time chart
+            const responseTimes = data.summary?.avg_response_times || {};
+            const operations = Object.keys(responseTimes);
+            const avgTimes = operations.map(op => responseTimes[op].avg);
+
+            charts.responseTime.data.labels = operations;
+            charts.responseTime.data.datasets[0].data = avgTimes;
+            charts.responseTime.update();
+
+            // Update cache chart
+            const cacheHitRate = data.summary?.cache_hit_rate || 0;
+            const cacheMissRate = 1 - cacheHitRate;
+            
+            charts.cache.data.datasets[0].data = [cacheHitRate, cacheMissRate];
+            charts.cache.update();
+
+            // Update system resources chart (simplified - would need historical data)
+            const system = data.current?.system || {};
+            const timestamp = new Date().toLocaleTimeString();
+            
+            charts.system.data.labels.push(timestamp);
+            charts.system.data.datasets[0].data.push(system.cpu_percent || 0);
+            charts.system.data.datasets[1].data.push(system.memory_percent || 0);
+            
+            // Keep only last 20 data points
+            if (charts.system.data.labels.length > 20) {
+                charts.system.data.labels.shift();
+                charts.system.data.datasets[0].data.shift();
+                charts.system.data.datasets[1].data.shift();
+            }
+            
+            charts.system.update();
+        }
+
+        // Helper functions
+        function getHealthColor(health) {
+            switch (health) {
+                case 'good': return 'health-good';
+                case 'warning': return 'health-warning';
+                case 'critical': return 'health-critical';
+                default: return 'health-unknown';
+            }
+        }
+
+        function getHealthBadge(health) {
+            switch (health) {
+                case 'good': return 'success';
+                case 'warning': return 'warning';
+                case 'critical': return 'danger';
+                default: return 'secondary';
+            }
+        }
+
+        // Fetch and update data
+        async function refreshData() {
+            try {
+                const response = await fetch('/api/performance');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    updateSystemHealth(data);
+                    updateTaskQueue(data);
+                    updateErrorSummary(data);
+                    updateRecommendations(data);
+                    updateCharts(data);
+                } else {
+                    console.error('Failed to fetch performance data');
+                }
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            refreshData();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(refreshData, 30000);
+        });
+    </script>
+</body>
+</html>

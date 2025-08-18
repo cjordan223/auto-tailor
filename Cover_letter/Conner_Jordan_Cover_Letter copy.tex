@@ -1,0 +1,105 @@
+%-------------------------
+% Cover Letter in Latex
+% Based on Conner Jordan's Resume Template
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage[hidelinks]{hyperref}
+\usepackage[english]{babel}
+\usepackage{fontawesome5}
+
+\usepackage{CormorantGaramond}
+\usepackage{charter}
+
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.7in}
+\addtolength{\textheight}{1.4in}
+\urlstyle{same}
+
+% Color Definitions
+\definecolor{cvblue}{rgb}{0.054, 0.329, 0.518}
+\definecolor{black}{rgb}{0.075, 0.031, 0.063}
+\definecolor{darkcolor}{rgb}{0.059, 0.271, 0.224}
+\definecolor{SlateGrey}{rgb}{0.180, 0.180, 0.180}
+\definecolor{LightGrey}{rgb}{0.400, 0.400, 0.400}
+
+\raggedbottom
+\raggedright
+
+% Custom Commands
+\newcommand{\companyName}[1]{\textbf{\large#1}}
+\newcommand{\contactInfo}[4]{
+    \begin{center}
+    {\Huge \textbf{#1}}\\[4pt]
+    {\Large #2}\\[8pt]
+    \href{mailto:#3}{
+        \raisebox{-0.15\height}{\faEnvelope\ #3}} ~ | ~
+    \raisebox{-0.15\height}{\faMapMarker\ #4}
+    \end{center}
+}
+
+\begin{document}
+
+% Full Header
+\begin{center}
+  {\Huge \textbf{Conner Jordan}}\\[4pt]
+  {\Large San Luis Obispo, CA}\\[4pt]
+  \href{tel:+18059759793}{
+    \raisebox{-0.05\height}{\faPhone\ (805) 975-9793}} ~ | ~
+  \href{mailto:connercharlesjordan@gmail.com}{
+    \raisebox{-0.15\height}{\faEnvelope\ connercharlesjordan@gmail.com}} ~ | ~
+  \raisebox{-0.15\height}{\faMapMarker\ San Luis Obispo, CA} \\
+  \href{https://www.linkedin.com/in/conner-jordan-4b268514a/}{
+    \raisebox{-0.15\height}{\faLinkedin\ linkedin.com/in/conner-jordan-4b268514a}} ~ | ~
+  \href{https://github.com/cjordan223}{
+    \raisebox{-0.15\height}{\faGithub\ github.com/cjordan223}}
+\end{center}
+
+\vspace{16pt}
+
+% Date
+\begin{flushright}
+August 13, 2025
+\end{flushright}
+
+% Hiring Manager Details
+
+% Salutation
+\noindent
+Hiring Team,
+
+\vspace{16pt}
+
+% Paragraph 1
+I’m applying for the Data \& AI role focused on making BNSF a real-time enterprise. My core strengths are Python and SQL, building secure, observable data services, and turning messy operational sources into dependable datasets that product and analytics teams can trust. I work across AWS/Azure/GCP, containerize with Docker/Kubernetes, provision with Terraform, and wire CI/CD so pipelines are testable, versioned, and easy to roll back.
+
+\vspace{16pt}
+
+% Paragraph 2
+At the University of California, I consolidated Rapid7, Jamf, BigFix, and ServiceNow into a single operational view and automated the end-to-end flow—from extraction and normalization to analytics—reducing manual effort by 100+ hours per month and enabling near-real-time risk reporting across 2,700 endpoints. Earlier, I built SQL log-query frameworks with Pandas/NumPy to surface actionable signals for leadership and harden production systems. These projects leaned on the same foundations you need: dimensional modeling and star schemas for BI, careful schema governance, strong authN/Z and secrets management, and disciplined monitoring and alerting when SLAs slip.
+
+\vspace{16pt}
+
+% Paragraph 3
+I’m comfortable owning solution design through deployment and operations: standing up batch and incremental jobs, implementing CDC where it fits, instrumenting pipelines, documenting contracts, and collaborating closely with data scientists and analysts. While my recent work has been more event-driven than tool-specific, I can ramp quickly on Kafka/Kinesis/Flink/Spark and have hands-on exposure to lakehouse patterns with Snowflake and Databricks.
+
+\vspace{16pt}
+
+% Closing
+If your mandate is low-latency ingest, certified datasets, and reliable, secure data products that scale, I’d like to help ship that.
+
+\vspace{16pt}
+
+Sincerely,\\
+Conner Jordan
+
+\end{document}

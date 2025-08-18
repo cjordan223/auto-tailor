@@ -24,6 +24,11 @@ from flask import Flask, request, render_template, jsonify, send_file
 # Import PDF utilities
 from pdf_utils import compile_latex_to_pdf, backup_resume_files, generate_comparison_pdfs, pdf_to_base64
 
+# Import performance monitoring
+from performance_monitor import get_performance_dashboard_data, create_performance_report
+from cache_manager import cleanup_cache, get_cache_stats
+from task_queue import cleanup_old_tasks, get_queue_stats
+
 app = Flask(__name__)
 
 # Import existing pipeline modules
@@ -41,7 +46,7 @@ def index():
 
 @app.route('/process-jd', methods=['POST'])
 def process_job_description():
-    """Process a job description through the existing pipeline"""
+    """Process a job description through the existing pipeline (synchronous)"""
     try:
         data = request.get_json()
         if not data or 'job_description' not in data:
@@ -91,6 +96,88 @@ def process_job_description():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/process-jd-async', methods=['POST'])
+def process_job_description_async():
+    """Process a job description asynchronously for better performance"""
+    try:
+        from task_queue import submit_skills_extraction_task, get_task_queue
+
+        data = request.get_json()
+        if not data or 'job_description' not in data:
+            return jsonify({'success': False, 'error': 'No job description provided'}), 400
+
+        job_description = data['job_description'].strip()
+        if not job_description:
+            return jsonify({'success': False, 'error': 'Job description cannot be empty'}), 400
+
+        # Create or use permanent baseline backup for "before" comparison
+        ensure_baseline_backup()
+
+        # Submit to background task queue
+        task_id = submit_skills_extraction_task(job_description)
+
+        # Store session info
+        session_id = f"async_jd_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{task_id[:8]}"
+        processing_results[session_id] = {
+            'task_id': task_id,
+            'job_description': job_description,
+            'created_at': datetime.now().isoformat(),
+            'async': True
+        }
+
+        return jsonify({
+            'success': True,
+            'task_id': task_id,
+            'session_id': session_id,
+            'status': 'processing',
+            'message': 'Job description submitted for processing. Use task_id to check status.'
+        })
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/task-status/<task_id>')
+def get_task_status(task_id):
+    """Get the status of an async task"""
+    try:
+        from task_queue import get_task_queue
+
+        queue = get_task_queue()
+        task = queue.get_task_status(task_id)
+
+        if not task:
+            return jsonify({'success': False, 'error': 'Task not found'}), 404
+
+        response = {
+            'success': True,
+            'task_id': task_id,
+            'status': task.status.value,
+            'progress': task.progress,
+            'created_at': task.created_at.isoformat(),
+            'task_type': task.task_type
+        }
+
+        if task.started_at:
+            response['started_at'] = task.started_at.isoformat()
+        if task.completed_at:
+            response['completed_at'] = task.completed_at.isoformat()
+        if task.error:
+            response['error'] = task.error
+        if task.result:
+            response['result'] = task.result
+            # For completed skills extraction, format as expected by frontend
+            if task.task_type == 'skills_extraction' and task.status.value == 'completed':
+                response['skills_count'] = len(
+                    task.result.get('skills_flat', []))
+                response['skills'] = task.result
+
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/generate-summary', methods=['POST'])
 def generate_summary():
     """Generate professional summary without modifying files"""
@@ -102,7 +189,7 @@ def generate_summary():
 
         if result.returncode != 0:
             return jsonify({
-                'success': False, 
+                'success': False,
                 'error': f'Summary generation failed: {result.stderr}'
             }), 500
 
@@ -126,7 +213,7 @@ def generate_summary():
 
     except subprocess.TimeoutExpired:
         return jsonify({
-            'success': False, 
+            'success': False,
             'error': 'Summary generation timed out after 30 minutes'
         }), 500
     except Exception as e:
@@ -141,17 +228,36 @@ def update_resume():
         data = request.get_json() or {}
         selected_skills = data.get('selected_skills', [])
         professional_summary = data.get('professional_summary', '')
-        
-        # Find the most recent JD session
+
+        # Find the most recent JD session (handle both sync and async sessions)
         jd_sessions = [k for k in processing_results.keys()
-                       if k.startswith('jd_session_')]
+                       if k.startswith('jd_session_') or k.startswith('async_jd_session_')]
         if not jd_sessions:
             return jsonify({'success': False, 'error': 'No job description session found. Please process a job description first.'}), 400
 
         # Get the most recent session
         latest_session = max(
-            jd_sessions, key=lambda x: processing_results[x].get('temp_dir', ''))
+            jd_sessions, key=lambda x: processing_results[x].get('created_at', ''))
         session_data = processing_results[latest_session]
+
+        # Handle different session types
+        is_async_session = latest_session.startswith('async_jd_session_')
+
+        # For async sessions, we need to create a temp_dir and get skills_count from artifacts
+        if is_async_session:
+            # Create temp directory for async session
+            temp_dir = tempfile.mkdtemp(prefix='async_jd_processing_')
+            session_data['temp_dir'] = temp_dir
+
+            # Get skills count from artifacts if available
+            artifacts_path = Path('artifacts/jd_skills.json')
+            if artifacts_path.exists():
+                with open(artifacts_path, 'r') as f:
+                    skills_data = json.load(f)
+                session_data['skills_count'] = len(
+                    skills_data.get('skills_flat', []))
+            else:
+                session_data['skills_count'] = 0
 
         # Create a filtered skills file if specific skills were selected
         if selected_skills:
@@ -160,7 +266,7 @@ def update_resume():
             if artifacts_path.exists():
                 with open(artifacts_path, 'r') as f:
                     original_skills = json.load(f)
-                
+
                 # Filter the skills to only include selected ones
                 filtered_skills = {
                     'skills_flat': selected_skills,
@@ -168,28 +274,31 @@ def update_resume():
                     'categorized': {},
                     'job_skills_ranked': []
                 }
-                
+
                 # Preserve structure for selected skills
                 if 'by_section_top3' in original_skills:
                     for section, skills in original_skills['by_section_top3'].items():
-                        filtered_section_skills = [s for s in skills if s in selected_skills]
+                        filtered_section_skills = [
+                            s for s in skills if s in selected_skills]
                         if filtered_section_skills:
                             filtered_skills['by_section_top3'][section] = filtered_section_skills
-                
+
                 if 'job_skills_ranked' in original_skills:
                     filtered_skills['job_skills_ranked'] = [
-                        skill_obj for skill_obj in original_skills['job_skills_ranked'] 
+                        skill_obj for skill_obj in original_skills['job_skills_ranked']
                         if skill_obj.get('canonical') in selected_skills
                     ]
-                
+
                 # Write filtered skills back to artifacts
                 with open(artifacts_path, 'w') as f:
                     json.dump(filtered_skills, f, indent=2)
-                
-                print(f"✅ Filtered skills to {len(selected_skills)} selected items")
+
+                print(
+                    f"✅ Filtered skills to {len(selected_skills)} selected items")
 
         # Run the resume update pipeline
-        result = run_resume_update(session_data['temp_dir'], professional_summary)
+        result = run_resume_update(
+            session_data['temp_dir'], professional_summary)
 
         if result['success']:
             # Generate PDFs for comparison
@@ -550,25 +659,25 @@ def update_summary_in_tex_file(summary_text: str) -> bool:
     try:
         import re
         from pathlib import Path
-        
+
         resume_file = Path('Resume/Conner_Jordan_Software_Engineer.tex')
         if not resume_file.exists():
             return False
-        
+
         # Read current resume content
         resume_content = resume_file.read_text()
-        
+
         # Pattern to find the summary section
         SUMMARY_PATTERN = re.compile(
             r"(% SUMMARY_BLOCK_START\s*\n)(.*?)(\n\s*% SUMMARY_BLOCK_END)",
             re.DOTALL
         )
-        
+
         if SUMMARY_PATTERN.search(resume_content):
             # Replace the content of the summary block
             updated_content = SUMMARY_PATTERN.sub(
-                f"\\1{summary_text.strip()}\\3", 
-                resume_content, 
+                f"\\1{summary_text.strip()}\\3",
+                resume_content,
                 count=1
             )
             resume_file.write_text(updated_content)
@@ -576,7 +685,7 @@ def update_summary_in_tex_file(summary_text: str) -> bool:
         else:
             print("Warning: Could not find summary block markers in resume file")
             return False
-            
+
     except Exception as e:
         print(f"Error updating summary in tex file: {e}")
         return False
@@ -668,14 +777,14 @@ def run_resume_update(temp_dir: str, custom_summary: str = None) -> Dict[str, An
             'skills.tex',
             'Resume/Conner_Jordan_Software_Engineer.tex'
         ]
-        
+
         # Only include summary artifacts if we used the automatic summary updater
         if not custom_summary:
             files_list.extend([
                 'artifacts/summary_updated_block.tex',
                 'artifacts/summary_editor_output.json'
             ])
-        
+
         result_data = {
             'success': True,
             'files': files_list
@@ -732,6 +841,63 @@ def reset_baseline():
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/performance')
+def performance_dashboard():
+    """Serve the performance dashboard"""
+    return render_template('performance.html')
+
+
+@app.route('/api/performance')
+def api_performance():
+    """API endpoint for performance data"""
+    try:
+        data = get_performance_dashboard_data()
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/performance/report')
+def api_performance_report():
+    """API endpoint for detailed performance report"""
+    try:
+        report = create_performance_report()
+        return jsonify(report)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/performance/cleanup', methods=['POST'])
+def api_performance_cleanup():
+    """API endpoint for cleaning up old data"""
+    try:
+        cache_cleaned = cleanup_cache()
+        tasks_cleaned = cleanup_old_tasks()
+
+        return jsonify({
+            'success': True,
+            'cache_cleaned': cache_cleaned,
+            'tasks_cleaned': tasks_cleaned
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/performance/stats')
+def api_performance_stats():
+    """API endpoint for performance statistics"""
+    try:
+        cache_stats = get_cache_stats()
+        queue_stats = get_queue_stats()
+
+        return jsonify({
+            'cache': cache_stats,
+            'tasks': queue_stats
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

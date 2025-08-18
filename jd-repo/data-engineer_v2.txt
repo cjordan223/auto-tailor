@@ -1,0 +1,38 @@
+Description
+
+About the Role 
+ 
+As a NinjaOne Data Scientist, you'll leverage advanced analytics and machine learning to transform complex data sets into actionable insights that drive business impact. You’ll collaborate with cross-functional teams to shape business strategies, optimize processes, and fuel data-driven decision-making that directly impacts our products and services. This is a unique opportunity to use cutting-edge technology and techniques to drive growth and enhance the overall NinjaOne experience. 
+ 
+Location - We are flexible on remote working from home, if you are located in the USA and reside in one of the following states - CA, CO, CT, FL, GA, *IL, KS, ME, MA, NJ, NC, NY, OR, TN, TX, VA, and WA. We have physical offices in Austin, TX and Tampa, FL, if you prefer a hybrid option.  
+ 
+We hire the best software engineers, but experience in our stack can’t hurt:  NinjaOne is built on Java, Kotlin, C++, and Postgres, supporting millions of user endpoints and running as a scalable cloud service in AWS.  Knowing large-scale datastore bottlenecks, asynchronous application design and client-server architecture will help you. 
+   
+What You’ll be Doing 
+
+    Data Analysis & Modeling: Design, develop, and implement machine learning models to solve complex business problems. Apply statistical methods, predictive models, and advanced algorithms to analyze data, uncover trends, and drive actionable insights. 
+
+    Data Exploration & Feature Engineering: Conduct exploratory data analysis (EDA) to identify hidden patterns and relationships in the data. Use feature engineering techniques to create meaningful variables that improve the performance and accuracy of your models. 
+
+    Collaboration: Partner closely with data engineers, product managers, and business analysts to fully understand data requirements. Collaborate on refining data-driven solutions that align with business objectives and drive continuous improvement across the organization. 
+
+    Other duties as needed
+
+ 
+About You 
+
+    Bachelor’s degree in Computer Science, Computer Engineering, Information Technology or equivalent work experience preferred.   
+
+    5+ years of experience in data science, machine learning, and data engineering. 
+
+    Strong background in data science with experience applying machine learning and statistical models to real-world problems. 
+
+    Proficient in programming languages such as Python, SQL, R, or similar, and have experience with data analysis libraries (e.g., pandas, NumPy, Scikit-learn). 
+
+    Excellent problem-solving skills, an analytical mindset, and a passion for transforming raw data into actionable insights. 
+
+    Experience with data visualization tools such as Tableau, Power BI, or Matplotlib. 
+
+    Solid understanding of algorithms, data structures, and statistics. 
+
+    Proficiency in cloud platforms like AWS, GCP, or Azure, and experience with tools like Airflow or Kafka for orchestrating data workflows. 

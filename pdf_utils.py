@@ -17,34 +17,58 @@ import subprocess
 import shutil
 import tempfile
 import base64
+import sys
 from pathlib import Path
 from typing import Optional, Tuple, Dict, Any
 import os
 
 
-def compile_latex_to_pdf(tex_file_path: str, output_dir: Optional[str] = None) -> Dict[str, Any]:
+def compile_latex_to_pdf(tex_file_path: str, output_dir: Optional[str] = None, use_cache: bool = True) -> Dict[str, Any]:
     """
-    Compile a LaTeX file to PDF using pdflatex.
+    Compile a LaTeX file to PDF using pdflatex with intelligent caching.
     
-    This function handles LaTeX compilation with proper error handling and
-    temporary directory management to avoid conflicts with existing files.
+    This function handles LaTeX compilation with proper error handling,
+    temporary directory management, and caching to avoid redundant compilations.
     
     Args:
         tex_file_path: Path to the .tex file to compile
         output_dir: Directory to save the PDF (defaults to same dir as tex file)
+        use_cache: Whether to use caching for faster compilation (default: True)
     
     Returns:
         Dictionary containing:
         - success: Boolean indicating if compilation succeeded
         - pdf_path: Path to generated PDF file (if successful)
         - error: Error message (if failed)
+        - cached: Boolean indicating if result came from cache
     """
     tex_path = Path(tex_file_path)
     if not tex_path.exists():
         return {
             'success': False,
-            'error': f'LaTeX file not found: {tex_path}'
+            'error': f'LaTeX file not found: {tex_path}',
+            'cached': False
         }
+    
+    # Read tex content for caching
+    tex_content = tex_path.read_text(encoding='utf-8')
+    
+    # Check cache first if enabled
+    if use_cache:
+        try:
+            from cache_manager import get_cached_pdf_compilation, cache_pdf_compilation
+            cached_pdf_path = get_cached_pdf_compilation(tex_content)
+            if cached_pdf_path and Path(cached_pdf_path).exists():
+                print("🚀 Using cached PDF compilation", file=sys.stderr)
+                return {
+                    'success': True,
+                    'pdf_path': cached_pdf_path,
+                    'cached': True
+                }
+        except ImportError:
+            print("Cache manager not available for PDF compilation", file=sys.stderr)
+    
+    print("⚙️ Compiling LaTeX to PDF (no cache hit)", file=sys.stderr)
     
     if output_dir is None:
         output_dir = tex_path.parent
@@ -78,16 +102,27 @@ def compile_latex_to_pdf(tex_file_path: str, output_dir: Optional[str] = None) -
         
         if result.returncode == 0 and pdf_path.exists():
             print(f"✅ PDF compiled successfully: {pdf_path}")
+            
+            # Cache the successful compilation if enabled
+            if use_cache:
+                try:
+                    cache_pdf_compilation(tex_content, str(pdf_path))
+                    print("💾 Cached PDF compilation result", file=sys.stderr)
+                except:
+                    print("Failed to cache PDF compilation", file=sys.stderr)
+            
             return {
                 'success': True,
-                'pdf_path': str(pdf_path)
+                'pdf_path': str(pdf_path),
+                'cached': False
             }
         else:
             error_msg = f"LaTeX compilation failed:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
             print(f"❌ {error_msg}")
             return {
                 'success': False,
-                'error': error_msg
+                'error': error_msg,
+                'cached': False
             }
             
     except Exception as e:
@@ -95,7 +130,8 @@ def compile_latex_to_pdf(tex_file_path: str, output_dir: Optional[str] = None) -
         print(f"❌ {error_msg}")
         return {
             'success': False,
-            'error': error_msg
+            'error': error_msg,
+            'cached': False
         }
 
 

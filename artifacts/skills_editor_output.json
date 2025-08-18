@@ -1,30 +1,32 @@
 {
-  "latex": "\\textbf{Programming Languages:} TypeScript, Jupyter, Python, PowerShell, Java, Swift, Bash, C/C++, SQL\\n\\vspace{3pt}\\n\\textbf{Frontend:} Vue.js, React.js, MUI, Vite, Tailwind CSS, Next.js\\n\\vspace{3pt}\\n\\textbf{Backend:} Django, Express.js, Node.js, Spring Boot, FastAPI, Flask, RESTful \\& GraphQL API Development, .NET\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} Data Pipelines, Azure, Docker, AWS, Terraform, CI/CD (GitHub Actions, Jenkins), Cloud Infrastructure, Kubernetes, Lambda, Ansible, Google Cloud Platform (GCP)\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Ollama, Vector Databases (Chroma, Pinecone), LM Studio, LangChain, MLX, Claude Code, ML/AI Models\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} PowerToys, Shell Scripting, Git, Selenium, Command-Line Scripts/Utilities, Raycast, Postman, GitHub Copilot, Crontab\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} Penetration Testing, ServiceNow, Application Security (AppSec), SABSA, Identity Systems, GIAC, Incident Response, CrowdStrike, AWS Security Services, Vulnerability Management, Authentication (authN), Encryption, Rapid7, Secure Systems, OWASP Top 10, TOGAF, CISSP-ISSAP, Azure Security, Jamf, SAST (Static Application Security Testing), Authorization (authZ), BigFix, API Security, SIEM, IAM, SOX, CCSP, Web Security Testing (Burp Suite, OWASP Juice Shop)\\n\\vspace{3pt}\\n\\textbf{Databases:} MySQL, Snowflake, Apache Kafka, MongoDB, DynamoDB, Databricks, PostgreSQL",
+  "latex": "\\textbf{Programming Languages:} Python, PowerShell, Swift, Bash, TypeScript, Java, C/C++, SQL, Jupyter\\n\\vspace{3pt}\\n\\textbf{Frontend:} React.js, Tailwind CSS, Vue.js, Vite, Next.js, MUI\\n\\vspace{3pt}\\n\\textbf{Backend:} RESTful \\& GraphQL API Development, Flask, Django, Spring Boot, FastAPI, .NET, Express.js, Node.js\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} Azure, AWS, Kubernetes, Lambda, CI/CD (GitHub Actions, Jenkins), Google Cloud Platform (GCP), Ansible, Cloud Infrastructure, Data Pipelines, Docker, Terraform\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Ollama, MLX, LangChain, Claude Code, Vector Databases (Chroma, Pinecone), LM Studio, ML/AI Models\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} Crontab, Meltano, Command-Line Scripts/Utilities, Raycast, DBT Core, Shell Scripting, Airflow, Postman, Selenium, PowerToys, Git, GitHub Copilot\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} Secure Systems, Identity Systems, SABSA, Jamf, Penetration Testing, Azure Security, SIEM, CCSP, Encryption, ServiceNow, Incident Response, CISSP-ISSAP, Authentication (authN), SOX, GIAC, CrowdStrike, Vulnerability Management, BigFix, Application Security (AppSec), TOGAF, OWASP Top 10, Authorization (authZ), IAM, Rapid7, API Security, AWS Security Services, Web Security Testing (Burp Suite, OWASP Juice Shop), SAST (Static Application Security Testing)\\n\\vspace{3pt}\\n\\textbf{Databases:} DynamoDB, MySQL, PostgreSQL, Snowflake, MongoDB, Databricks, Apache Kafka",
   "change_notes": [
     {
       "section": "Programming Languages",
       "added": [
-        "Python"
+        "SQL"
       ],
-      "removed": []
-    },
-    {
-      "section": "Backend",
-      "added": [],
       "removed": []
     },
     {
       "section": "Cloud \\& DevOps",
       "added": [
-        "Data Pipelines",
-        "Cloud Infrastructure"
+        "Terraform"
       ],
       "removed": []
     },
     {
-      "section": "AI \\& LLM Tools",
+      "section": "Automation \\& Productivity",
       "added": [
-        "ML/AI Models"
+        "DBT Core",
+        "Airflow"
+      ],
+      "removed": []
+    },
+    {
+      "section": "Databases",
+      "added": [
+        "Snowflake"
       ],
       "removed": []
     }

@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1755487852.39791 "/Users/connerjordan/Documents/Sandbox/Resume/Conner_Jordan_Software_Engineer.tex" "Conner_Jordan_Software_Engineer.pdf" "Conner_Jordan_Software_Engineer" 1755487852.97283 0
-  "/Users/connerjordan/Documents/Sandbox/Resume/Conner_Jordan_Software_Engineer.tex" 1755487852.182 9488 38d080f0b3412bac62ae2555e4b33204 ""
+["pdflatex"] 1755496359.14399 "/Users/connerjordan/Documents/Sandbox/Resume/Conner_Jordan_Software_Engineer.tex" "Conner_Jordan_Software_Engineer.pdf" "Conner_Jordan_Software_Engineer" 1755496359.93706 0
+  "/Users/connerjordan/Documents/Sandbox/Resume/Conner_Jordan_Software_Engineer.tex" 1755496358.88028 10091 d2bf3de9d22f7a92b7c06c9acb60d267 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/fontawesome5/fa5brands0.enc" 1622837620 2920 d63721872b8c77041b88e51b8f7c291d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/fontawesome5/fa5free1.enc" 1622837620 3042 0e2b14b9be7d01075a4c4591d5d1781b ""
@@ -104,9 +104,9 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1749444579 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1741450574 3345740 46b66fdb0378f7bf5921b5eabf1762b8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "Conner_Jordan_Software_Engineer.aux" 1755487852.92382 722 3a94c62c76f6fda3f88764b3813e60a9 "pdflatex"
-  "Conner_Jordan_Software_Engineer.out" 1755487852.9243 448 336766dbabca7872b19557beb1d6cf3b "pdflatex"
-  "Conner_Jordan_Software_Engineer.tex" 1755487852.182 9488 38d080f0b3412bac62ae2555e4b33204 ""
+  "Conner_Jordan_Software_Engineer.aux" 1755496359.8708 722 5a891df3645b7eb86266e49e6ce95359 "pdflatex"
+  "Conner_Jordan_Software_Engineer.out" 1755496359.87128 448 336766dbabca7872b19557beb1d6cf3b "pdflatex"
+  "Conner_Jordan_Software_Engineer.tex" 1755496358.88028 10091 d2bf3de9d22f7a92b7c06c9acb60d267 ""
   (generated)
   "Conner_Jordan_Software_Engineer.aux"
   "Conner_Jordan_Software_Engineer.log"
