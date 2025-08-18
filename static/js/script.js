@@ -55,8 +55,8 @@ class ResumeWizard {
         processBtn.disabled = true;
         processBtn.innerHTML = '<span class="spinner"></span>Processing...';
         
-        // Try async processing first, fall back to sync if needed
-        const useAsync = true; // Could be a user preference
+        // Use sync processing for reliability (async has issues)
+        const useAsync = false; // Temporarily disabled due to task queue issues
         
         if (useAsync) {
             await this.handleAsyncProcessing(jobDescription, processBtn);
@@ -566,6 +566,17 @@ class ResumeWizard {
         beforeEmbed.src = `data:application/pdf;base64,${beforePDF}`;
         afterEmbed.src = `data:application/pdf;base64,${afterPDF}`;
         
+        // Set href for clickable PDFs
+        const beforeLink = document.getElementById('before-pdf-link');
+        const afterLink = document.getElementById('after-pdf-link');
+        
+        if (beforeLink) {
+            beforeLink.href = '/get-pdf/before';
+        }
+        if (afterLink) {
+            afterLink.href = `/get-pdf/after/${this.downloadId}`;
+        }
+
         comparisonDiv.classList.remove('d-none');
     }
 

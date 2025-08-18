@@ -252,8 +252,11 @@ async def get_session():
     return _session
 
 
-async def chat_once(base_url: str, api_key: str, model: str,
-                    messages: List[Dict[str, str]], options: Dict[str, Any]) -> str:
+def chat_once_sync(base_url: str, api_key: str, model: str,
+                   messages: List[Dict[str, str]], options: Dict[str, Any]) -> str:
+    """Synchronous version using requests for reliability"""
+    import requests
+    
     url = f"{base_url}/chat/completions"
     payload = {
         "model": model,
@@ -263,16 +266,18 @@ async def chat_once(base_url: str, api_key: str, model: str,
         "seed": options.get("seed", 42),
         "max_tokens": options.get("max_tokens", 4096),
         "stop": options.get("stop", []),
-        "stream": False  # Disable streaming to avoid parsing issues
+        "stream": False
     }
 
     try:
-        session = await get_session()
-        async with session.post(url, headers={"Authorization": f"Bearer {api_key}"},
-                                json=payload) as r:
-            r.raise_for_status()
-            response = await r.json()
-            return response['choices'][0]['message']['content']
+        response = requests.post(
+            url, 
+            headers={"Authorization": f"Bearer {api_key}"},
+            json=payload,
+            timeout=300  # 5 minute timeout
+        )
+        response.raise_for_status()
+        return response.json()['choices'][0]['message']['content']
     except Exception as e:
         print(f"LLM call failed: {e}", file=sys.stderr)
         # Fallback to existing output if available
@@ -388,7 +393,7 @@ def coerce_json(s: str) -> Any:
 # -------------------
 
 
-async def main():
+def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--jd", default="jd.txt", help="Path to JD text")
     ap.add_argument("--base-url", default=DEFAULT_BASE_URL)
@@ -405,23 +410,9 @@ async def main():
         sys.exit(f"ERROR: JD file not found: {jd_path}")
     jd_text = jd_path.read_text(encoding="utf-8").strip()
 
-    # Check cache first (unless disabled)
-    resp = None
-    cache_key = f"{jd_text}|{args.model}|{JD_EXTRACTOR_SYSTEM}"
-    
-    if not args.no_cache:
-        try:
-            from cache_manager import get_cached_llm_response, cache_llm_response
-            resp = get_cached_llm_response(cache_key)
-            if resp:
-                print("🚀 Using cached LLM response", file=sys.stderr)
-        except ImportError:
-            print("Cache manager not available, proceeding without cache", file=sys.stderr)
-    
-    # If no cached response, make LLM call
-    if not resp:
-        print("⚙️ Making LLM request (no cache hit)", file=sys.stderr)
-        resp = await chat_once(
+    # Caching disabled for data integrity - always make fresh LLM call
+    print("⚙️ Making LLM request (caching disabled for data integrity)", file=sys.stderr)
+    resp = chat_once_sync(
             args.base_url, args.api_key, args.model,
             [
                 {"role": "system", "content": JD_EXTRACTOR_SYSTEM},
@@ -429,14 +420,6 @@ async def main():
             ],
             GEN_OPTIONS
         )
-        
-        # Cache the response (unless disabled)
-        if not args.no_cache:
-            try:
-                cache_llm_response(cache_key, resp)
-                print("💾 Cached LLM response", file=sys.stderr)
-            except:
-                print("Failed to cache LLM response", file=sys.stderr)
 
     try:
         raw = coerce_json(resp)
@@ -489,4 +472,4 @@ async def main():
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

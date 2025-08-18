@@ -1,30 +1,26 @@
 {
   "skills_flat": [
-    "DBT Core",
-    "Meltano",
-    "Snowpipe",
-    "Airflow",
-    "Terraform",
-    "SQL",
-    "Snowflake",
+    "LLMs",
+    "Agile",
+    "GitHub",
+    "React",
+    "Figma",
     "Python"
   ],
   "by_section_top3": {
     "Programming Languages": [
       "Python"
     ],
-    "Backend": [
-      "DBT Core",
-      "Meltano",
-      "Snowpipe"
+    "Frontend": [
+      "React",
+      "Figma"
     ],
     "Cloud & DevOps": [
-      "Airflow",
-      "Terraform"
+      "Agile",
+      "GitHub"
     ],
-    "Databases": [
-      "SQL",
-      "Snowflake"
+    "AI & LLM Tools": [
+      "LLMs"
     ]
   },
   "categorized": {},
@@ -35,67 +31,57 @@
       "section": "Programming Languages",
       "confidence": 0.9,
       "evidence": [
-        "Strong Python and SQL skills"
+        "Advanced programming skills in Python and React"
       ],
       "aliases": []
     },
     {
-      "token": "sql",
-      "canonical": "SQL",
-      "section": "Databases",
+      "token": "react",
+      "canonical": "React",
+      "section": "Frontend",
       "confidence": 0.9,
       "evidence": [
-        "Strong Python and SQL skills"
+        "Advanced programming skills in Python and React"
       ],
       "aliases": []
     },
     {
-      "token": "dbt core",
-      "canonical": "DBT Core",
-      "section": "Backend",
+      "token": "llms",
+      "canonical": "LLMs",
+      "section": "AI & LLM Tools",
       "confidence": 0.85,
       "evidence": [
-        "Build and optimize data models in dbt Core"
+        "architecting systems that integrate and deploy LLMs"
       ],
       "aliases": []
     },
     {
-      "token": "airflow",
-      "canonical": "Airflow",
+      "token": "figma",
+      "canonical": "Figma",
+      "section": "Frontend",
+      "confidence": 0.75,
+      "evidence": [
+        "Demonstrated ability to lead Figma design for complex UIs"
+      ],
+      "aliases": []
+    },
+    {
+      "token": "agile",
+      "canonical": "Agile",
       "section": "Cloud & DevOps",
-      "confidence": 0.9,
+      "confidence": 0.7,
       "evidence": [
-        "Experience with Airflow."
+        "Deep experience in Agile software development, sprint planning"
       ],
       "aliases": []
     },
     {
-      "token": "terraform",
-      "canonical": "Terraform",
+      "token": "github",
+      "canonical": "GitHub",
       "section": "Cloud & DevOps",
-      "confidence": 0.85,
+      "confidence": 0.65,
       "evidence": [
-        "Manage and automate data infrastructure in AWS using Terraform"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "snowflake",
-      "canonical": "Snowflake",
-      "section": "Databases",
-      "confidence": 0.9,
-      "evidence": [
-        "Experience with Snowflake"
-      ],
-      "aliases": []
-    },
-    {
-      "token": "meltano",
-      "canonical": "Meltano",
-      "section": "Backend",
-      "confidence": 0.85,
-      "evidence": [
-        "Design, develop, and maintain scalable data ingestion and orchestration using Meltano"
+        "version control using platforms like GitHub"
       ],
       "aliases": []
     }

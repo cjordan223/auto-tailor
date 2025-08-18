@@ -264,17 +264,11 @@ def submit_pdf_compilation_task(tex_file_path: str, output_dir: str) -> str:
 
 
 def submit_skills_extraction_task(jd_content: str) -> str:
-    """Submit a skills extraction task with intelligent caching"""
-    from cache_manager import get_cached_skills_extraction, cache_skills_extraction
+    """Submit a skills extraction task (caching disabled for data integrity)"""
+    # Caching disabled due to data integrity issues
 
     def skills_worker():
-        # Check cache first
-        cached_result = get_cached_skills_extraction(jd_content)
-        if cached_result:
-            print("🚀 Using cached skills extraction result")
-            return cached_result
-
-        print("⚙️ Processing job description (no cache hit)")
+        print("⚙️ Processing job description (caching disabled)")
 
         # Import the module with the correct filename
         try:
@@ -295,12 +289,16 @@ def submit_skills_extraction_task(jd_content: str) -> str:
             temp_jd_path = f.name
 
         try:
-            # Run JD parser
+            # Run JD parser using subprocess (more reliable)
+            import subprocess
             import sys
-            old_argv = sys.argv
-            sys.argv = ['jd-parser.py', '--jd', temp_jd_path]
-            jd_parser.main()
-            sys.argv = old_argv  # Restore original argv
+            
+            result = subprocess.run([
+                sys.executable, 'jd-parser.py', '--jd', temp_jd_path
+            ], capture_output=True, text=True, timeout=300)  # 5 minute timeout
+            
+            if result.returncode != 0:
+                raise Exception(f"JD parser failed: {result.stderr}")
 
             # Read results
             from pathlib import Path
@@ -310,10 +308,6 @@ def submit_skills_extraction_task(jd_content: str) -> str:
             if artifacts_path.exists():
                 with open(artifacts_path, 'r') as f:
                     result = json.load(f)
-
-                # Cache the result for future use
-                cache_skills_extraction(jd_content, result)
-                print("💾 Cached skills extraction result")
 
                 return result
             else:

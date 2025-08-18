@@ -1,0 +1,65 @@
+Stanford University and the Department of Behavioral Sciences is seeking a Software Engineer to help develop and maintaining scalable, production-grade frontend and backend systems to help support autism research in AI. The Software Engineer will work with the PI and other staff members to execute all programming tasks, including programming, analyzing, designing, developing, implementing, modifying, and maintaining computer programs. 
+
+The School of Medicine’s Department of Psychiatry and The School of Engineering Computer Sciences group at Stanford have collaborated over the last seven years to develop modules for verbal individuals on the autism spectrum. They are currently refining, researching, and developing additional modules to show that the AI modules are effective and generalize to human conversation. One Randomized Clinical Trial has been published and smaller studies are currently being implemented with the goal of providing accessible and effective treatment to autistic adolescents and adults. 
+
+Duties include:
+
+·       Conceptualize design, implement, and develop solutions for complex system/programs independently. 
+
+·       Work with a variety of users to gain information, and develop intra-system tradeoffs between different users, as necessary; interact with a diverse client base and outside vendor contacts.
+
+·       Document system builds and application configurations; maintain and update documentation as needed.
+
+·       Provide technical analysis, design, development, conversion, and implementation work. 
+
+·       Work as a project leader, as needed, for projects of moderate complexity. 
+
+·       Serve as a technical resource for applications.
+
+·       Compare, evaluate, and implement new features and technologies, and integrate them into the computing environment.
+
+·       Follow team software development methodology. 
+
+·       Mentor lower level software developers.
+
+* - The job duties listed are typical examples of work performed by positions in this job classification and are not designed to contain or be interpreted as a comprehensive inventory of all duties, tasks, and responsibilities. Specific duties and responsibilities may vary depending on department or program needs without changing the general nature and scope of the job or level of responsibility. Employees may also perform other duties as assigned.
+
+DESIRED QUALIFICATIONS:
+
+•       3+ years of experience (or 1–2 years with a Master’s degree) developing and maintaining scalable, production-grade frontend and backend systems 
+
+•       Advanced programming skills in Python and React, with experience architecting systems that integrate and deploy LLMs 
+
+•       Proven expertise in prompt-engineering and fine-tuning LLMs for specific product and user needs 
+
+•       Experience leading structured and unstructured user research, with a strong foundation in user experience (UX) design and human-computer interaction (HCI) principles 
+
+•       Demonstrated ability to lead Figma design for complex UIs and entire re-branding and re-tooling of an app. Demonstrated ability to translate Figma designs into robust, accessible, and performant front-end implementations 
+
+•       Excellent cross-functional communication skills, with a track record of leading collaboration between engineering, medical, and research teams 
+
+•       Deep experience in Agile software development, sprint planning, and version control using platforms like GitHub 
+
+•       Expertise in designing and enforcing test strategies, including unit, integration, and end-to-end testing for mission-critical applications 
+
+•       Demonstrated ability to mentor junior developers and volunteers in software development, technical content development, and inclusive design principles
+
+EDUCATION & EXPERIENCE (REQUIRED):
+
+Bachelor's degree and five years of relevant experience, or a combination of education and relevant experience.
+
+KNOWLEDGE, SKILLS AND ABILITIES (REQUIRED):
+
+·       Expertise in designing, developing, testing, and deploying applications.
+
+·       Proficiency with application design and data modeling. 
+
+·       Ability to define and solve logical problems for highly technical applications. 
+
+·       Effective communication skills with both technical and non-technical clients.
+
+·       Ability to lead activities on structured team development projects.
+
+·       Ability to select, adapt, and effectively use a variety of programming methods. 
+
+·       Knowledge of application domain. 

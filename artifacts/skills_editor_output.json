@@ -1,33 +1,50 @@
 {
-  "latex": "\\textbf{Programming Languages:} Python, PowerShell, Swift, Bash, TypeScript, Java, C/C++, SQL, Jupyter\\n\\vspace{3pt}\\n\\textbf{Frontend:} React.js, Tailwind CSS, Vue.js, Vite, Next.js, MUI\\n\\vspace{3pt}\\n\\textbf{Backend:} RESTful \\& GraphQL API Development, Flask, Django, Spring Boot, FastAPI, .NET, Express.js, Node.js\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} Azure, AWS, Kubernetes, Lambda, CI/CD (GitHub Actions, Jenkins), Google Cloud Platform (GCP), Ansible, Cloud Infrastructure, Data Pipelines, Docker, Terraform\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Ollama, MLX, LangChain, Claude Code, Vector Databases (Chroma, Pinecone), LM Studio, ML/AI Models\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} Crontab, Meltano, Command-Line Scripts/Utilities, Raycast, DBT Core, Shell Scripting, Airflow, Postman, Selenium, PowerToys, Git, GitHub Copilot\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} Secure Systems, Identity Systems, SABSA, Jamf, Penetration Testing, Azure Security, SIEM, CCSP, Encryption, ServiceNow, Incident Response, CISSP-ISSAP, Authentication (authN), SOX, GIAC, CrowdStrike, Vulnerability Management, BigFix, Application Security (AppSec), TOGAF, OWASP Top 10, Authorization (authZ), IAM, Rapid7, API Security, AWS Security Services, Web Security Testing (Burp Suite, OWASP Juice Shop), SAST (Static Application Security Testing)\\n\\vspace{3pt}\\n\\textbf{Databases:} DynamoDB, MySQL, PostgreSQL, Snowflake, MongoDB, Databricks, Apache Kafka",
+  "latex": "\\textbf{Programming Languages:} SQL, Bash, PowerShell, Java, Jupyter, Python, Swift, TypeScript, C/C++\\n\\vspace{3pt}\\n\\textbf{Frontend:} Figma, Vue.js, Tailwind CSS, Vite, React.js, MUI, Next.js\\n\\vspace{3pt}\\n\\textbf{Backend:} Flask, FastAPI, Django, Spring Boot, Node.js, Express.js, RESTful \\& GraphQL API Development, .NET\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} Ansible, Kubernetes, Terraform, Cloud Infrastructure, Data Pipelines, Azure, Docker, CI/CD (GitHub Actions, Jenkins), Google Cloud Platform (GCP), AWS, Lambda\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Ollama, LLMs, Claude Code, Vector Databases (Chroma, Pinecone), LangChain, ML/AI Models, LM Studio, MLX\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} PowerToys, Crontab, Airflow, GitHub, GitHub Copilot, DBT Core, Raycast, Postman, Meltano, Shell Scripting, Command-Line Scripts/Utilities, Selenium, Git\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} Penetration Testing, SAST (Static Application Security Testing), Incident Response, IAM, Identity Systems, Jamf, Secure Systems, BigFix, Vulnerability Management, SOX, AWS Security Services, CCSP, Encryption, CISSP-ISSAP, CrowdStrike, API Security, Authentication (authN), OWASP Top 10, TOGAF, Authorization (authZ), SIEM, Azure Security, GIAC, Rapid7, ServiceNow, Web Security Testing (Burp Suite, OWASP Juice Shop), Application Security (AppSec), SABSA\\n\\vspace{3pt}\\n\\textbf{Databases:} PostgreSQL, Snowflake, MySQL, DynamoDB, Apache Kafka, MongoDB, Databricks",
   "change_notes": [
     {
       "section": "Programming Languages",
       "added": [
-        "SQL"
+        "Python"
       ],
       "removed": []
     },
     {
+      "section": "Frontend",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Backend",
+      "added": [],
+      "removed": []
+    },
+    {
       "section": "Cloud \\& DevOps",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "AI \\& LLM Tools",
       "added": [
-        "Terraform"
+        "LLMs"
       ],
       "removed": []
     },
     {
       "section": "Automation \\& Productivity",
       "added": [
-        "DBT Core",
-        "Airflow"
+        "GitHub"
       ],
       "removed": []
     },
     {
+      "section": "Security \\& Operating Systems",
+      "added": [],
+      "removed": []
+    },
+    {
       "section": "Databases",
-      "added": [
-        "Snowflake"
-      ],
+      "added": [],
       "removed": []
     }
   ]

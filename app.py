@@ -900,6 +900,30 @@ def api_performance_stats():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/get-pdf/before')
+def get_before_pdf():
+    """Serve the baseline PDF file"""
+    before_pdf_path = Path('baseline_backup/Conner_Jordan_Software_Engineer.pdf')
+    if not before_pdf_path.exists():
+        return "Baseline PDF not found", 404
+    return send_file(before_pdf_path, mimetype='application/pdf')
+
+
+@app.route('/get-pdf/after/<download_id>')
+def get_after_pdf(download_id):
+    """Serve the tailored PDF file"""
+    if download_id not in processing_results:
+        return "Download not found or expired", 404
+    
+    result = processing_results[download_id]
+    after_pdf_path = result.get('after_pdf_path')
+
+    if not after_pdf_path or not Path(after_pdf_path).exists():
+        return "Tailored PDF not found", 404
+        
+    return send_file(after_pdf_path, mimetype='application/pdf')
+
+
 if __name__ == '__main__':
     print("🚀 Starting JD Parser Web UI...")
     print("📝 Open http://localhost:8081 in your browser")
