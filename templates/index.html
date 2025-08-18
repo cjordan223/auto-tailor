@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JD Parser & Resume Tailoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold text-primary mb-3">
+                        <i class="bi bi-bullseye"></i> JD Parser & Resume Tailoring
+                    </h1>
+                    <p class="lead text-muted">Transform your resume to match job requirements with AI-powered precision</p>
+                </div>
+
+                <!-- Progress Steps -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="progress-steps">
+                            <div class="step active" id="step-indicator-1">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Process Job Description</div>
+                            </div>
+                            <div class="step" id="step-indicator-2">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Review & Approve</div>
+                            </div>
+                            <div class="step" id="step-indicator-3">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Compare & Download</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Process Job Description -->
+                <div id="step-1" class="step-content">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="card-title mb-0">
+                                <i class="bi bi-file-text"></i> Step 1: Process Job Description
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <h6><i class="bi bi-info-circle"></i> How it works:</h6>
+                                <ol class="mb-0">
+                                    <li>Paste the job description below</li>
+                                    <li>Our AI will extract relevant skills and requirements</li>
+                                    <li>Review and approve the suggested changes in the next step</li>
+                                </ol>
+                            </div>
+                            
+                            <form id="jdForm">
+                                <div class="mb-3">
+                                    <label for="jobDescription" class="form-label fw-semibold">Job Description *</label>
+                                    <textarea 
+                                        id="jobDescription" 
+                                        name="jobDescription" 
+                                        class="form-control" 
+                                        rows="15"
+                                        placeholder="Paste the complete job description here..."
+                                        required
+                                    ></textarea>
+                                    <div class="form-text">Include the complete job posting for best results</div>
+                                </div>
+                                
+                                <div class="d-flex gap-2 justify-content-between">
+                                    <div>
+                                        <button type="submit" class="btn btn-primary btn-lg" id="processBtn">
+                                            <i class="bi bi-gear"></i> Process Job Description
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
+                                            <i class="bi bi-trash"></i> Clear
+                                        </button>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-warning" onclick="resetBaseline()" 
+                                            title="Reset the baseline 'before' resume to current state">
+                                        <i class="bi bi-arrow-clockwise"></i> Reset Baseline
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Review & Approve -->
+                <div id="step-2" class="step-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="card-title mb-0">
+                                <i class="bi bi-check-circle"></i> Step 2: Review & Approve Changes
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-success">
+                                <h6><i class="bi bi-lightbulb"></i> Review the extracted information below:</h6>
+                                <p class="mb-0">Select which skills to include and edit the professional summary to match your style.</p>
+                            </div>
+
+                            <!-- Skills Selection Section -->
+                            <div class="mb-4">
+                                <h5 class="text-success"><i class="bi bi-star"></i> Extracted Skills</h5>
+                                <p class="text-muted">All skills are selected by default. Uncheck any skills you don't want to include.</p>
+                                <div id="skillsContainer" class="row">
+                                    <!-- Skills will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Professional Summary Section -->
+                            <div class="mb-4">
+                                <h5 class="text-success"><i class="bi bi-person-vcard"></i> Professional Summary</h5>
+                                <p class="text-muted">Edit the AI-generated summary to match your personal style and preferences.</p>
+                                <div class="mb-3">
+                                    <label for="professionalSummary" class="form-label fw-semibold">Your Professional Summary</label>
+                                    <textarea 
+                                        id="professionalSummary" 
+                                        class="form-control" 
+                                        rows="6"
+                                        placeholder="AI-generated professional summary will appear here for editing..."
+                                    ></textarea>
+                                    <div class="form-text">Feel free to modify this summary to better reflect your voice and experience</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" onclick="goToStep(1)">
+                                    <i class="bi bi-arrow-left"></i> Back to Step 1
+                                </button>
+                                <button type="button" class="btn btn-success btn-lg" id="generateResumeBtn" onclick="generateFinalResume()">
+                                    <i class="bi bi-file-earmark-check"></i> Generate Final Resume
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Compare & Download -->
+                <div id="step-3" class="step-content d-none">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="card-title mb-0">
+                                <i class="bi bi-download"></i> Step 3: Compare & Download
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <h6><i class="bi bi-file-earmark-diff"></i> Your resume has been successfully updated!</h6>
+                                <p class="mb-0">Compare the before and after versions below, then download your tailored resume files.</p>
+                            </div>
+
+                            <!-- Changes Summary -->
+                            <div id="changesSummary" class="mb-4 d-none">
+                                <h5 class="text-info"><i class="bi bi-list-check"></i> Summary of Changes</h5>
+                                <div id="changesContent">
+                                    <!-- Changes will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- PDF Comparison -->
+                            <div id="pdfComparison" class="mb-4 d-none">
+                                <h5 class="text-info"><i class="bi bi-file-earmark-pdf"></i> Resume Comparison</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-header bg-light">
+                                                <h6 class="card-title mb-0"><i class="bi bi-file-earmark"></i> Before (Original)</h6>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <embed id="beforePDF" class="pdf-embed w-100" type="application/pdf" height="600">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-header bg-light">
+                                                <h6 class="card-title mb-0"><i class="bi bi-file-earmark-check"></i> After (Tailored)</h6>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <embed id="afterPDF" class="pdf-embed w-100" type="application/pdf" height="600">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" onclick="startOver()">
+                                    <i class="bi bi-arrow-repeat"></i> Start Over
+                                </button>
+                                <div>
+                                    <button type="button" class="btn btn-outline-primary" onclick="goToStep(2)">
+                                        <i class="bi bi-arrow-left"></i> Back to Review
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-lg" id="downloadBtn" disabled>
+                                        <i class="bi bi-download"></i> Download Resume Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Messages -->
+                <div id="status" class="mt-4 d-none">
+                    <!-- Status messages will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

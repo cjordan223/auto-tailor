@@ -16,6 +16,13 @@ import sys
 from pathlib import Path
 import requests
 
+# A more robust pattern to find the summary section. It looks for the SUMMARY_BLOCK_START
+# comment and captures the content until SUMMARY_BLOCK_END, including the cvsection tags.
+SUMMARY_PATTERN = re.compile(
+    r"(% SUMMARY_BLOCK_START\s*\n)(.*?)(\n\s*% SUMMARY_BLOCK_END)",
+    re.DOTALL
+)
+
 
 def get_api_key(api_key):
     if api_key == "lm-studio":
@@ -63,7 +70,7 @@ def get_llm_response(base_url, api_key, model, prompt):
             "temperature": 0.7,
             "top_p": 0.9,
             "seed": 42,
-            "max_tokens": 250,
+            "max_tokens": 2000,
             "stop": []
         }
 
@@ -80,52 +87,17 @@ def get_llm_response(base_url, api_key, model, prompt):
         sys.exit(f"❌ ERROR: Failed to get response from LLM: {e}")
 
 
-def truncate_to_four_sentences(text):
-    """Ensure summary is exactly 4 sentences, truncating if necessary."""
-    # Clean up the text first
-    text = text.strip()
-    
-    # Split into sentences (handles periods, exclamation marks, question marks)
-    import re
-    sentences = re.split(r'(?<=[.!?])\s+', text)
-    
-    # Remove empty sentences
-    sentences = [s.strip() for s in sentences if s.strip()]
-    
-    # If we have more than 4 sentences, truncate to first 4
-    if len(sentences) > 4:
-        print(f"⚠️  Summary had {len(sentences)} sentences, truncating to 4")
-        sentences = sentences[:4]
-    
-    # Join sentences back together
-    result = ' '.join(sentences)
-    
-    # Ensure it ends with proper punctuation
-    if result and not result.endswith(('.', '!', '?')):
-        result += '.'
-    
-    return result
-
-
 def update_tex_file(tex_content, new_block_content):
-    # Remove the \n at the start of the block
-    new_block_content = new_block_content.strip()
+    """Update the professional summary section in the resume .tex file."""
+    # Just use the plain text content (no cvsection tags)
+    formatted_content = new_block_content.strip()
 
-    # Try the new format first (with --- markers)
-    pattern = re.compile(
-        r"(\\section\{PROFESSIONAL SUMMARY\}\s*---\s*\n)(.*?)(\n\s*---\s*\\vspace\{[0-9]+pt\})", re.DOTALL
-    )
-    if pattern.search(tex_content):
-        return pattern.sub(f"\1{new_block_content}\3", tex_content)
+    if SUMMARY_PATTERN.search(tex_content):
+        # Replace the content of the summary block (group 2)
+        return SUMMARY_PATTERN.sub(f"\\1{formatted_content}\\3", tex_content, count=1)
 
-    # Fallback to old format (with SUMMARY_BLOCK markers)
-    pattern = re.compile(
-        r"(% SUMMARY_BLOCK_START\n)(.*?)(\n% SUMMARY_BLOCK_END)", re.DOTALL
-    )
-    if pattern.search(tex_content):
-        return pattern.sub(f"\1{new_block_content}\3", tex_content)
-
-    sys.exit("❌ ERROR: Could not find summary section in resume file")
+    sys.exit(
+        "❌ ERROR: Could not find the 'SUMMARY_BLOCK_START/END' markers in the resume file.")
 
 
 def main():
@@ -158,6 +130,11 @@ def main():
         action="store_true",
         help="Only write to artifacts directory",
     )
+    ap.add_argument(
+        "--generate-only",
+        action="store_true",
+        help="Only generate and print the summary to stdout, do not modify any files",
+    )
     args = ap.parse_args()
 
     # Setup
@@ -170,20 +147,15 @@ def main():
     jd_skills_content = read_file_content(jd_skills_path)
     resume_content = read_file_content(resume_file_path)
 
-    # Extract original summary
-    # Try the new format first (with --- markers)
-    original_summary_match = re.search(
-        r"\\section\{PROFESSIONAL SUMMARY\}\s*---\s*\n(.*?)\n\s*---\s*\\vspace\{[0-9]+pt\}", resume_content, re.DOTALL
-    )
-    if not original_summary_match:
-        # Fallback to old format (with SUMMARY_BLOCK markers)
-        original_summary_match = re.search(
-            r"% SUMMARY_BLOCK_START\n(.*)\n% SUMMARY_BLOCK_END", resume_content, re.DOTALL
-        )
-        if not original_summary_match:
-            sys.exit("❌ ERROR: Could not find summary block in resume file")
+    # Extract original summary using the robust pattern
+    original_summary_match = SUMMARY_PATTERN.search(resume_content)
 
-    original_summary = original_summary_match.group(1).strip()
+    if not original_summary_match:
+        sys.exit("❌ ERROR: Could not find summary block in resume file. "
+                 "Ensure it has % SUMMARY_BLOCK_START and % SUMMARY_BLOCK_END markers.")
+
+    # Extract the summary text content (plain text between the commented flags)
+    original_summary = original_summary_match.group(2).strip()
 
     # Create prompt
     prompt = f"""
@@ -204,8 +176,6 @@ def main():
     - Maintain a professional and confident tone.
     - The revised summary should be a natural evolution of the original, not a complete rewrite.
     - Make the changes subtle, so it's not obvious it was tailored.
-    - CRITICAL: The revised summary must be exactly 4 sentences and between 70-90 words total.
-    - CRITICAL: Be concise and impactful - every word must add value.
     - Output ONLY the revised summary text, without any preamble or explanation.
     """
 
@@ -214,11 +184,11 @@ def main():
     revised_summary = get_llm_response(
         args.base_url, get_api_key(args.api_key), args.model, prompt)
     print("✅ LLM response received.")
-    
-    # Ensure summary is exactly 4 sentences
-    revised_summary = truncate_to_four_sentences(revised_summary)
-    word_count = len(revised_summary.split())
-    print(f"📏 Summary validated: 4 sentences, {word_count} words")
+
+    # Handle --generate-only flag
+    if args.generate_only:
+        print(revised_summary)
+        return
 
     # Save artifacts
     write_file_content(

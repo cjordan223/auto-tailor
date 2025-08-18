@@ -1,8 +1,3 @@
-% Resume in LaTeX — One Page
-% Author : Conner Jordan (modified)
-% License : MIT
-%------------------------
-
 \documentclass[letterpaper,10pt]{article}
 
 % Basics
@@ -69,20 +64,25 @@
 
 % Header
 \begin{center}
-  {\Huge \textbf{Conner Jordan}}\\[0pt]  % ADJUSTABLE: Change to [2pt] for more space between name and title
-  {\Large Software Engineer}\\[0pt]  % ADJUSTABLE: Change to [2pt] for more space between title and contact info
-  \href{tel:+18059759793}{\faPhone\ +1 (805) 975-9793} \,|\, 
-  \href{mailto:connercharlesjordan@gmail.com}{\faEnvelope\ connercharlesjordan@gmail.com} \,|\, 
-  \faMapMarker\ San Luis Obispo, CA \\[-2pt]  % ADJUSTABLE: Change to [0pt] or [2pt] for more space
+  {\Huge \textbf{Conner Jordan}}[[0pt]  % ADJUSTABLE: Change to [2pt] for more space between name and title
+  {\Large Software Engineer}[[0pt]  % ADJUSTABLE: Change to [2pt] for more space between title and contact info
+  \href{tel:+18059759793}{\faPhone\ +1 (805) 975-9793} \,|
+  \href{mailto:connercharlesjordan@gmail.com}{\faEnvelope\ connercharlesjordan@gmail.com} \,|
+  \faMapMarker\ San Luis Obispo, CA [[-2pt]  % ADJUSTABLE: Change to [0pt] or [2pt] for more space
   \href{https://www.linkedin.com/in/conner-jordan-4b268514a/}{\faLinkedin\ linkedin.com/in/conner-jordan-4b268514a}
-  \,|\, \href{https://github.com/cjordan223}{\faGithub\ github.com/cjordan223}
-  \,|\, \href{https://connerjordan.com/}{\faGlobe\ connerjordan.com}
+  \,|
+  \href{https://github.com/cjordan223}{\faGithub\ github.com/cjordan223}
+  \,|
+  \href{https://connerjordan.com/}{\faGlobe\ connerjordan.com}
 \end{center}
 
 \vspace{4pt}  % ADJUSTABLE: Increase to 6pt or 8pt for more space after header
 
 % SUMMARY
-I am a passionate software engineer with extensive experience in developing secure systems and robust solutions across AWS, Azure, and GCP. My expertise lies in writing clean code and implementing identity and access management frameworks that align with regulatory standards like SOX. I thrive on leveraging my CISSP-ISSAP and SABSA certifications to drive technological advancement through secure and scalable cloud-native practices.  % ADJUSTABLE: Increase to 8pt or 10pt for more space before next section
+% SUMMARY_BLOCK_START
+I am a passionate and driven software engineer with a proven track record of building and explaining complex technical products. My experience includes creating technical resources and educational content, with a focus on AI/ML tools, agents, and infrastructure. I am dedicated to empowering developers and streamlining the development lifecycle from conception to production.
+% SUMMARY_BLOCK_END
+\vspace{8pt}
 
 % EDUCATION
 \section{EDUCATION}
@@ -95,37 +95,7 @@ I am a passionate software engineer with extensive experience in developing secu
 \resumeSubHeadingListEnd
 \vspace{6pt}  % ADJUSTABLE: Increase to 8pt or 10pt for more space before next section
 
-% SKILLS 
-\section{TECHNICAL SKILLS}
-\vspace{6pt}
-\resumeSubHeadingListStart
-\item \small{
-\textbf{Programming Languages:} Python, C/C++, Swift, Bash, TypeScript, SQL, Java, PowerShell
-\vspace{3pt}
-
-\textbf{Frontend:} React.js, Tailwind CSS, Vue.js, MUI, Vite, Next.js
-\vspace{3pt}
-
-\textbf{Backend:} .NET, Django, Node.js, Express.js, Spring Boot, RESTful \& GraphQL API Development, FastAPI, Flask
-\vspace{3pt}
-
-\textbf{Cloud \& DevOps:} Azure, Terraform, Kubernetes, Docker, Google Cloud Platform (GCP), Ansible, AWS, Lambda, CI/CD (GitHub Actions, Jenkins)
-\vspace{3pt}
-
-\textbf{AI \& LLM Tools:} Vector Databases (Chroma, Pinecone), MLX, LangChain, LM Studio, Claude Code, Ollama
-\vspace{3pt}
-
-\textbf{Automation \& Productivity:} Git, Shell Scripting, Crontab, GitHub Copilot, PowerToys, Postman, Selenium, Raycast
-\vspace{3pt}
-
-\textbf{Security \& Operating Systems:} Incident Response, Authorization (authZ), Web Security Testing (Burp Suite, OWASP Juice Shop), Application Security (AppSec), SAST (Static Application Security Testing), Vulnerability Management, AWS Security, TOGAF, GIAC, ServiceNow, CrowdStrike, CISSP-ISSAP, Penetration Testing, Identity Systems, Encryption, API Security, Jamf, CCSP, Secure Systems, SABSA, Rapid7, Azure Security, IAM, Authentication (authN), SOX, BigFix, OWASP Top 10
-\vspace{3pt}
-
-\textbf{Databases:} PostgreSQL, Snowflake, Databricks, DynamoDB, MongoDB, MySQL
-}
-\resumeSubHeadingListEnd
 \vspace{6pt}  % ADJUSTABLE: Increase to 8pt or 10pt for more space before next section
-
 % EXPERIENCE
 \section{WORK EXPERIENCE}
 \vspace{8pt}  % SAFE: Space after section title
@@ -135,45 +105,91 @@ I am a passionate software engineer with extensive experience in developing secu
   {University of California}{Oakland, CA (Remote)}
   {Security Engineer}{March 2025 - Present}
   \vspace{2pt}
+% SAFE: Add \vspace{4pt} here for space after job header
 \resumeItemListStart
   \resumeItem{Helped develop standardized workflows and automation for UC-wide vulnerability detection and mitigation across MacOS and Windows endpoints, supporting a systemwide cybersecurity and compliance initiative.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Investigated security risks in fringe and unmanaged applications, writing custom remediation scripts and policies to address non-standard vulnerabilities, leveraging innovative thinking and advanced troubleshooting skills.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Built a unified dashboard integrating Rapid7, Jamf, BigFix, and ServiceNow (SaaS), improving threat visibility and enabling more efficient SecOps response through real-time database and asset data aggregation.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Automated asset tracking and compliance monitoring through cross-platform scripting (Python, Bash, PowerShell), reducing manual workload and improving coverage across multiple operating systems.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Coordinated with IT teams to align endpoint security practices with compliance standards, streamlining reporting, supporting project management efforts, and improving interdepartmental collaboration in a cloud computing environment.}
 \resumeItemListEnd
+% SAFE: Add \vspace{6pt} here for space between jobs
 \vspace{6pt}
 
 \resumeSubheading
   {Great Wolf Resorts}{Chicago Corporate Office (Remote)}
   {Security Support Engineer}{May 2023 - March 2025}
+% SAFE: Add \vspace{4pt} here for space after job header
 \vspace{2pt}
 \resumeItemListStart
-  \resumeItem{Developed and maintained automation scripts for hybrid Azure tenant management, deploying updates for Carbon Black agents, Citrix patching, and BitLocker device enforcement across 10,000+ endpoints.}
+  \resumeItem{Developed and maintained Python automation scripts for hybrid Azure tenant management, deploying updates for Carbon Black agents, Citrix patching, and BitLocker device enforcement across 10,000+ endpoints.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Automated security certificate deployments using CrowdStrike RTR and PowerShell, preventing service disruptions for critical teams and saving an estimated 200+ hours in manual interventions annually.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Engineered a PowerShell interface integrated with Microsoft Graph API for managing distribution lists of 10,000+ users, eliminating human error and reducing annual manual workload by 500+ hours.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Built SQL log query frameworks in Rapid7 with Pandas/NumPy analytics pipelines, creating dynamic visualizations to detect suspicious behavior and inform executive decisions on security posture.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Led security awareness campaigns via KnowBe4, developing custom Python tools to analyze phishing simulation data, transforming raw metrics into actionable insights that improved employee compliance rates by 25\%.}
 \resumeItemListEnd
+% SAFE: Add \vspace{6pt} here for space between jobs
 \vspace{6pt}
-
 \resumeSubheading
   {Simple.biz}{Durham, NC (Remote)}
   {Freelance Web Developer}{August 2022 - May 2023}
+% SAFE: Add \vspace{4pt} here for space after job header
 \vspace{2pt}
 \resumeItemListStart
   \resumeItem{Delivered production-ready websites with optimized performance and SEO enhancements (e.g., alt tags, meta descriptions), incorporating automation scripts for build processes that improved search rankings and client visibility.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Implemented WCAG/ADA compliance guidelines through automated testing tools like Selenium, ensuring inclusive web applications and boosting usability scores while reducing accessibility-related issues.}
+  % SAFE: Add \vspace{2pt} here for space between bullet points
   \resumeItem{Conducted cross-browser/device compatibility testing with scripted automation, resolving discrepancies and achieving a 30\% decrease in user-reported issues across platforms.}
 \resumeItemListEnd
+\vspace{8pt}
+
+% SKILLS 
+\section{TECHNICAL SKILLS}
+\vspace{6pt}
+\resumeSubHeadingListStart
+\item \small{
+\textbf{Programming Languages:} Bash, C/C++, PowerShell, Java, Python, Swift, TypeScript, SQL
+\vspace{3pt}
+
+\textbf{Frontend:} React.js, MUI, Vue.js, Vite, Tailwind CSS, Next.js
+\vspace{3pt}
+
+\textbf{Backend:} FastAPI, Node.js, RESTful \& GraphQL API Development, Django, Flask, Express.js, Spring Boot, .NET
+\vspace{3pt}
+
+\textbf{Cloud \& DevOps:} Lambda, Ansible, AWS, Terraform, CI/CD (GitHub Actions, Jenkins), Kubernetes (K8S), Docker, Azure
+\vspace{3pt}
+
+\textbf{AI \& LLM Tools:} MLX, Vector Databases (Chroma, Pinecone), Ollama, LM Studio, LangChain, Claude Code
+\vspace{3pt}
+
+\textbf{Automation \& Productivity:} Crontab, Postman, GitHub Copilot, Selenium, Raycast, PowerToys, Git, Shell Scripting
+\vspace{3pt}
+
+\textbf{Security \& Operating Systems:} Wireshark, Jamf, Kali Linux, Rapid7, OWASP Top 10, Metasploit, TCP/IP Networking, Vulnerability Management, CrowdStrike, Incident Response, BigFix, Web Security Testing (Burp Suite Pro, Nessus, Nmap), API Security, ServiceNow
+\vspace{3pt}
+
+\textbf{Databases:} Snowflake, MySQL, PostgreSQL, Neo4j, MongoDB, Databricks, DynamoDB
+}
+\resumeSubHeadingListEnd
 
 \resumeSubHeadingListEnd
-\vspace{4pt}
+% SAFE: Add \vspace{8pt} here for space before next section
+\vspace{8pt}
 
 % CERTIFICATIONS
 \section{CERTIFICATIONS}
-\vspace{10pt}
 \resumeSubHeadingListStart
+\vspace{10pt}
 \item \small{\textbf{AWS Certified Cloud Practitioner} \hfill \textit{January 2025}}
 \resumeSubHeadingListEnd
 

@@ -39,9 +39,9 @@ python3 start_server.py  # → http://localhost:8081
 
 ### Web Interface (Recommended)
 1. Open `http://localhost:8081`
-2. Paste job description
-3. Process through all 3 phases automatically
-4. Download tailored resume
+2. **Step 1**: Paste job description → Process
+3. **Step 2**: Review extracted skills → Edit summary → Approve
+4. **Step 3**: Compare PDFs → Download tailored resume
 
 ### Command Line
 ```bash
@@ -60,7 +60,7 @@ python3 summary-updater.py --artifacts-only        # Phase 3
 
 ```
 ├── start_server.py          # Entry point with validation
-├── app.py                   # Web interface
+├── app.py                   # Modern web interface (3-step wizard)
 ├── run_jd_pipeline.py       # CLI pipeline runner
 │
 ├── jd-parser.py             # Phase 1: JD Analysis
@@ -69,7 +69,9 @@ python3 summary-updater.py --artifacts-only        # Phase 3
 │
 ├── Resume/                  # Resume files
 ├── artifacts/               # Phase outputs (auto-cleaned)
-└── baseline_backup/         # Original resume backup
+├── baseline_backup/         # Original resume backup
+├── templates/               # Web interface templates
+└── static/                  # CSS/JS assets
 ```
 
 ## 🔧 Phase Checkpoints

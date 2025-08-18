@@ -269,19 +269,18 @@ def coerce_json(s: str) -> Any:
     s = re.sub(r'\\&', '&', s)  # Fix escaped ampersands
     s = re.sub(r'\\\\([^"\\])', r'\\\1', s)  # Fix double-escaped characters
 
-    # First attempt: direct parse
+    # First attempt: direct parse (this will fail if there are multiple JSON objects)
     try:
         return json.loads(s)
     except json.JSONDecodeError:
         pass
 
-    # Second attempt: find the first complete JSON object
-    # Look for opening brace and try to find balanced closing
+    # Second attempt: find all complete JSON objects and choose the best one
+    json_objects = []
     brace_count = 0
     in_string = False
     escape_next = False
     start_pos = -1
-    end_pos = -1
 
     for i, char in enumerate(s):
         if escape_next:
@@ -305,14 +304,49 @@ def coerce_json(s: str) -> Any:
                 brace_count -= 1
                 if brace_count == 0 and start_pos != -1:
                     end_pos = i + 1
-                    break
+                    candidate = s[start_pos:end_pos]
+                    try:
+                        parsed = json.loads(candidate)
+                        json_objects.append(parsed)
+                    except json.JSONDecodeError:
+                        pass
+                    start_pos = -1
 
-    if start_pos != -1 and end_pos != -1:
-        candidate = s[start_pos:end_pos]
-        try:
-            return json.loads(candidate)
-        except json.JSONDecodeError:
-            pass
+    if json_objects:
+        # If we found multiple JSON objects, prefer the most complete one
+        if len(json_objects) > 1:
+            print(f"Warning: LLM returned {len(json_objects)} JSON objects, selecting the most complete one", file=sys.stderr)
+            
+            # Score each object based on required fields
+            def score_json_object(obj):
+                score = 0
+                required_fields = ['job_skills_ranked', 'by_section_top3', 'key_responsibilities']
+                for field in required_fields:
+                    if field in obj and obj[field]:
+                        score += 1
+                        if field == 'by_section_top3' and isinstance(obj[field], dict):
+                            # Extra points for having section data
+                            score += len([v for v in obj[field].values() if v])
+                return score
+            
+            # Find the object with the highest score
+            best_object = max(json_objects, key=score_json_object)
+            best_score = score_json_object(best_object)
+            
+            print(f"Selected JSON object with score {best_score} out of {len(json_objects)} candidates", file=sys.stderr)
+            return best_object
+        else:
+            return json_objects[0]
+
+    # Check if the response looks truncated
+    if s.count('{') > s.count('}'):
+        print("Error: LLM response appears to be truncated (unbalanced braces)", file=sys.stderr)
+        print(f"Found {s.count('{')} opening braces but only {s.count('}')} closing braces", file=sys.stderr)
+    
+    # Look for partial JSON structure that might be recoverable
+    if '"job_skills_ranked"' in s and '"key_responsibilities"' in s:
+        print("Error: Response contains expected fields but JSON structure is malformed", file=sys.stderr)
+        print("This may be due to LLM response truncation or formatting issues", file=sys.stderr)
 
     # If nothing worked, raise original error
     raise json.JSONDecodeError(f"Could not parse JSON from response", s, 0)

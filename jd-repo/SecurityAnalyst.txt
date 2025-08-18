@@ -1,0 +1,32 @@
+At PrizePicks, we are the fastest-growing sports company in North America, as recognized by Inc. 5000. As the leading platform for Daily Fantasy Sports, we cover a diverse range of sports leagues, including the NFL, NBA, and Esports titles like League of Legends and Counter-Strike. Our team of over 450 employees thrives in an inclusive culture that values individuals from diverse backgrounds, regardless of their level of sports fandom. Ready to reimagine the DFS industry together?
+
+Our Security team works in Engineering on the Infrastructure team to further develop our security practices, write and implement security policies, advise on best practices while implementing tooling to protect the company and our remarkable customers.
+
+What you’ll do:
+
+    Continuously monitoring public vulnerability disclosures to identify new vulnerabilities impacting the environment across endpoints and infrastructure and triage as needed.
+    Conducting regular security assessments and audits to identify potential vulnerabilities
+    Conduct new and recurring risk assessments against third-party vendors, including reviewing updated risk artifacts and attestations. 
+    Educating staff on information security through training and awareness programs
+    Ensure the integrity, confidentiality and accessibility of data and other sensitive digital assets
+    Assist with building out operational workflows and rituals including maturing and responding to alerts and creating runbooks
+    Secure the company’s digital assets through monitoring and tooling to prevent data loss, protect against insider threats and attacks.
+
+
+What you have: 
+
+    1-3 years of relevant work experience.
+    Knowledge of risk assessments tools, technologies and methods
+    Understanding of latest security principles, technique and protocols
+    Strong critical thinking and analytical skills 
+    Ability to define risks both in technical and non-technical terms with business-relevant language.
+    Technical must haves:
+        BS in Comp Science, Cybersecurity, InfoSec or related field
+        1-3 years experience in engineering
+        Familiarity with security frameworks and best practices
+        Strong understanding of risk management, threat analysis, and compliance standards (SOC2, ISO 27001, and US Data Privacy)
+        Compliance tooling (Vanta, SecureFrame, Asana, etc)
+        Vulnerability Scanning tooling familiarity
+        Vendor assessment and risk management tooling
+        Data Privacy tooling
+

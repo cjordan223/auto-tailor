@@ -19,7 +19,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
 
-from flask import Flask, request, render_template_string, jsonify, send_file
+from flask import Flask, request, render_template, jsonify, send_file
 
 # Import PDF utilities
 from pdf_utils import compile_latex_to_pdf, backup_resume_files, generate_comparison_pdfs, pdf_to_base64
@@ -29,700 +29,6 @@ app = Flask(__name__)
 # Import existing pipeline modules
 sys.path.append('.')
 
-# HTML Template for the web interface
-HTML_TEMPLATE = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JD Parser & Resume Tailoring</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        textarea {
-            width: 100%;
-            height: 300px;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 14px;
-            resize: vertical;
-            box-sizing: border-box;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: #007acc;
-        }
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 25px;
-        }
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .btn-primary {
-            background-color: #007acc;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #005a99;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #545b62;
-        }
-        .btn-primary:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 6px;
-            display: none;
-        }
-        .status.success {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-        .status.error {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-        .status.info {
-            background-color: #d1ecf1;
-            border: 1px solid #bee5eb;
-            color: #0c5460;
-        }
-        .progress {
-            margin-top: 15px;
-            text-align: center;
-        }
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #007acc;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .example {
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .example h3 {
-            margin-top: 0;
-            color: #495057;
-        }
-        .example p {
-            margin-bottom: 0;
-            color: #6c757d;
-            font-size: 14px;
-        }
-        .skills-section {
-            display: none;
-            margin-top: 30px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background: #f8f9fa;
-        }
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .skill-item {
-            background: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #e9ecef;
-            font-size: 14px;
-            color: #495057;
-            text-align: center;
-        }
-        .skill-category {
-            margin-bottom: 20px;
-        }
-        .skill-category h4 {
-            margin-bottom: 10px;
-            color: #495057;
-            border-bottom: 2px solid #007acc;
-            padding-bottom: 5px;
-        }
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .btn-success:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .pdf-comparison {
-            display: none;
-            margin-top: 30px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background: #f8f9fa;
-        }
-        .pdf-viewer {
-            display: flex;
-            gap: 20px;
-            margin-top: 15px;
-        }
-        .pdf-container {
-            flex: 1;
-            text-align: center;
-        }
-        .pdf-container h4 {
-            margin-bottom: 10px;
-            color: #495057;
-        }
-        .pdf-embed {
-            width: 100%;
-            height: 600px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .changes-summary {
-            display: none;
-            margin-top: 30px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background: #f8f9fa;
-        }
-        .change-section {
-            margin-bottom: 20px;
-            border: 1px solid #e9ecef;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .change-header {
-            background: #007acc;
-            color: white;
-            padding: 10px 15px;
-            font-weight: 600;
-            margin: 0;
-        }
-        .change-content {
-            padding: 15px;
-        }
-        .skill-change {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            padding: 8px;
-            border-radius: 4px;
-            background: white;
-        }
-        .skill-change.added {
-            border-left: 4px solid #28a745;
-            background: #f8fff9;
-        }
-        .skill-change.removed {
-            border-left: 4px solid #dc3545;
-            background: #fff8f8;
-        }
-        .skill-change.skipped {
-            border-left: 4px solid #ffc107;
-            background: #fffbf0;
-        }
-        .change-icon {
-            margin-right: 8px;
-            font-weight: bold;
-        }
-        .added .change-icon {
-            color: #28a745;
-        }
-        .removed .change-icon {
-            color: #dc3545;
-        }
-        .skipped .change-icon {
-            color: #ffc107;
-        }
-        .skill-name {
-            font-weight: 600;
-            margin-right: 10px;
-        }
-        .skill-reason {
-            font-size: 0.9em;
-            color: #6c757d;
-            font-style: italic;
-        }
-        @media (max-width: 768px) {
-            .pdf-viewer {
-                flex-direction: column;
-            }
-            .pdf-embed {
-                height: 400px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🎯 JD Parser & Resume Tailoring Pipeline</h1>
-        
-        <div class="example">
-            <h3>How it works:</h3>
-            <p>1. Paste your job description below<br>
-               2. Click "Process Job Description" to extract relevant skills<br>
-               3. Download your tailored resume files</p>
-        </div>
-
-        <form id="jdForm">
-            <div class="form-group">
-                <label for="jobDescription">Job Description:</label>
-                <textarea 
-                    id="jobDescription" 
-                    name="jobDescription" 
-                    placeholder="Paste the job description here..."
-                    required
-                ></textarea>
-            </div>
-            
-            <div class="button-group">
-                <button type="submit" class="btn-primary" id="processBtn">
-                    Process Job Description
-                </button>
-                <button type="button" class="btn-secondary" onclick="clearForm()">
-                    Clear
-                </button>
-                <button type="button" class="btn-secondary" onclick="resetBaseline()" title="Reset the baseline 'before' resume to current state">
-                    Reset Baseline
-                </button>
-            </div>
-        </form>
-
-        <div id="status" class="status"></div>
-        
-        <div id="skillsSection" class="skills-section">
-            <h3>🎯 Extracted Skills</h3>
-            <div id="skillsContent"></div>
-            <div class="button-group" style="margin-top: 20px;">
-                <button type="button" class="btn-success" id="updateResumeBtn" onclick="updateResume()">
-                    Update Resume with Skills
-                </button>
-            </div>
-        </div>
-        
-        <div id="changesSummary" class="changes-summary">
-            <h3>📝 Resume Changes Summary</h3>
-            <div id="changesContent"></div>
-        </div>
-        
-        <div id="pdfComparison" class="pdf-comparison">
-            <h3>📄 Resume Comparison</h3>
-            <div class="pdf-viewer">
-                <div class="pdf-container">
-                    <h4>Before (Original)</h4>
-                    <embed id="beforePDF" class="pdf-embed" type="application/pdf">
-                </div>
-                <div class="pdf-container">
-                    <h4>After (Tailored)</h4>
-                    <embed id="afterPDF" class="pdf-embed" type="application/pdf">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const form = document.getElementById('jdForm');
-        const status = document.getElementById('status');
-        const processBtn = document.getElementById('processBtn');
-        const skillsSection = document.getElementById('skillsSection');
-        const skillsContent = document.getElementById('skillsContent');
-        const updateResumeBtn = document.getElementById('updateResumeBtn');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const jobDescription = document.getElementById('jobDescription').value.trim();
-            if (!jobDescription) {
-                showStatus('Please enter a job description.', 'error');
-                return;
-            }
-
-            // Show processing status
-            processBtn.disabled = true;
-            processBtn.innerHTML = '<span class="spinner"></span>Processing...';
-            showStatus('Processing job description and extracting skills...', 'info');
-
-            try {
-                const response = await fetch('/process-jd', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ job_description: jobDescription })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        showStatus(`✅ Success! Extracted ${result.skills_count} relevant skills.`, 'success');
-                        
-                        // Display extracted skills
-                        if (result.skills) {
-                            displaySkills(result.skills);
-                        }
-                        
-                        // Show PDF comparison if available
-                        if (result.before_pdf && result.after_pdf) {
-                            showPDFComparison(result.before_pdf, result.after_pdf);
-                        }
-                    } else {
-                        showStatus(`❌ Error: ${result.error}`, 'error');
-                    }
-                } else {
-                    const error = await response.json();
-                    showStatus(`❌ Error: ${error.error || 'Processing failed'}`, 'error');
-                }
-            } catch (error) {
-                showStatus(`❌ Network error: ${error.message}`, 'error');
-            } finally {
-                // Reset button
-                processBtn.disabled = false;
-                processBtn.innerHTML = 'Process Job Description';
-            }
-        });
-
-        function showStatus(message, type) {
-            status.innerHTML = message;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
-        }
-
-        function clearForm() {
-            document.getElementById('jobDescription').value = '';
-            status.style.display = 'none';
-            skillsSection.style.display = 'none';
-            document.getElementById('pdfComparison').style.display = 'none';
-            document.getElementById('changesSummary').style.display = 'none';
-        }
-
-        function displaySkills(skills) {
-            let html = '';
-            
-            // Group skills by category if available
-            if (skills.by_section_top3) {
-                for (const [category, skillList] of Object.entries(skills.by_section_top3)) {
-                    if (skillList && skillList.length > 0) {
-                        html += `<div class="skill-category">
-                            <h4>${category}</h4>
-                            <div class="skills-grid">`;
-                        skillList.forEach(skill => {
-                            html += `<div class="skill-item">${skill}</div>`;
-                        });
-                        html += `</div></div>`;
-                    }
-                }
-            } else if (skills.categorized) {
-                for (const [category, skillList] of Object.entries(skills.categorized)) {
-                    if (skillList && skillList.length > 0) {
-                        html += `<div class="skill-category">
-                            <h4>${category}</h4>
-                            <div class="skills-grid">`;
-                        skillList.forEach(skill => {
-                            html += `<div class="skill-item">${skill}</div>`;
-                        });
-                        html += `</div></div>`;
-                    }
-                }
-            } else if (skills.skills_flat) {
-                // Display as flat list
-                html += `<div class="skills-grid">`;
-                skills.skills_flat.forEach(skill => {
-                    html += `<div class="skill-item">${skill}</div>`;
-                });
-                html += `</div>`;
-            } else if (skills.flat) {
-                // Display as flat list
-                html += `<div class="skills-grid">`;
-                skills.flat.forEach(skill => {
-                    html += `<div class="skill-item">${skill}</div>`;
-                });
-                html += `</div>`;
-            } else if (Array.isArray(skills)) {
-                // Direct array
-                html += `<div class="skills-grid">`;
-                skills.forEach(skill => {
-                    html += `<div class="skill-item">${skill}</div>`;
-                });
-                html += `</div>`;
-            }
-            
-            skillsContent.innerHTML = html;
-            skillsSection.style.display = 'block';
-        }
-
-        async function updateResume() {
-            updateResumeBtn.disabled = true;
-            updateResumeBtn.innerHTML = '<span class="spinner"></span>Updating Resume...';
-            showStatus('Updating resume with extracted skills...', 'info');
-
-            try {
-                const response = await fetch('/update-resume', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        showStatus(`✅ Resume updated successfully! <a href="/download/${result.download_id}" style="color: #007acc; text-decoration: none; font-weight: 600;">Download updated resume files</a>`, 'success');
-                        
-                        // Show changes summary if available
-                        if (result.changes) {
-                            showChangesSummary(result.changes);
-                        }
-                        
-                        // Show PDF comparison if available
-                        if (result.before_pdf && result.after_pdf) {
-                            showPDFComparison(result.before_pdf, result.after_pdf);
-                        }
-                    } else {
-                        showStatus(`❌ Error: ${result.error}`, 'error');
-                    }
-                } else {
-                    const error = await response.json();
-                    showStatus(`❌ Error: ${error.error || 'Resume update failed'}`, 'error');
-                }
-            } catch (error) {
-                showStatus(`❌ Network error: ${error.message}`, 'error');
-            } finally {
-                updateResumeBtn.disabled = false;
-                updateResumeBtn.innerHTML = 'Update Resume with Skills';
-            }
-        }
-
-        function showChangesSummary(changes) {
-            const summaryDiv = document.getElementById('changesSummary');
-            const contentDiv = document.getElementById('changesContent');
-            
-            let html = '';
-            
-            // Group changes by section
-            const sections = {};
-            
-            // Process added skills
-            if (changes.added && changes.added.length > 0) {
-                changes.added.forEach(change => {
-                    if (!sections[change.section]) {
-                        sections[change.section] = { added: [], removed: [], skipped: [] };
-                    }
-                    sections[change.section].added.push(change);
-                });
-            }
-            
-            // Process removed skills
-            if (changes.removed && changes.removed.length > 0) {
-                changes.removed.forEach(change => {
-                    if (!sections[change.section]) {
-                        sections[change.section] = { added: [], removed: [], skipped: [] };
-                    }
-                    sections[change.section].removed.push(change);
-                });
-            }
-            
-            // Process skipped skills
-            if (changes.skipped && changes.skipped.length > 0) {
-                changes.skipped.forEach(change => {
-                    if (!sections[change.section]) {
-                        sections[change.section] = { added: [], removed: [], skipped: [] };
-                    }
-                    sections[change.section].skipped.push(change);
-                });
-            }
-            
-            // Add summary changes as a special section
-            if (changes.summary_updated && changes.summary_changes) {
-                sections['Professional Summary'] = { 
-                    added: [], 
-                    removed: [], 
-                    skipped: [],
-                    summary_change: changes.summary_changes
-                };
-            }
-            
-            // Generate HTML for each section
-            for (const [sectionName, sectionChanges] of Object.entries(sections)) {
-                html += `<div class="change-section">
-                    <h4 class="change-header">${sectionName}</h4>
-                    <div class="change-content">`;
-                
-                // Added skills
-                sectionChanges.added.forEach(change => {
-                    html += `<div class="skill-change added">
-                        <span class="change-icon">+</span>
-                        <span class="skill-name">${change.skill}</span>
-                        <span class="skill-reason">${change.reason || 'Added from job requirements'}</span>
-                    </div>`;
-                });
-                
-                // Removed skills
-                sectionChanges.removed.forEach(change => {
-                    html += `<div class="skill-change removed">
-                        <span class="change-icon">−</span>
-                        <span class="skill-name">${change.skill}</span>
-                        <span class="skill-reason">${change.reason || 'Removed to make room for job-relevant skills'}</span>
-                    </div>`;
-                });
-                
-                // Skipped skills
-                sectionChanges.skipped.forEach(change => {
-                    html += `<div class="skill-change skipped">
-                        <span class="change-icon">⚠</span>
-                        <span class="skill-name">${change.skill}</span>
-                        <span class="skill-reason">${change.reason || 'Skipped - reason not specified'}</span>
-                    </div>`;
-                });
-                
-                // Summary changes (special handling)
-                if (sectionChanges.summary_change) {
-                    const summaryChange = sectionChanges.summary_change;
-                    html += `<div class="skill-change added">
-                        <span class="change-icon">✏️</span>
-                        <span class="skill-name">Professional Summary</span>
-                        <span class="skill-reason">${summaryChange.reason}</span>
-                    </div>`;
-                    
-                    // Add expandable before/after comparison
-                    html += `<div style="margin-top: 10px;">
-                        <details style="background: #f8f9fa; padding: 10px; border-radius: 4px;">
-                            <summary style="cursor: pointer; font-weight: 600;">View Summary Changes</summary>
-                            <div style="margin-top: 10px;">
-                                <div style="margin-bottom: 10px;">
-                                    <strong>Before:</strong>
-                                    <div style="background: #fff; padding: 8px; border-radius: 4px; font-style: italic; margin-top: 4px;">
-                                        ${summaryChange.original}
-                                    </div>
-                                </div>
-                                <div>
-                                    <strong>After:</strong>
-                                    <div style="background: #fff; padding: 8px; border-radius: 4px; font-style: italic; margin-top: 4px;">
-                                        ${summaryChange.revised}
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
-                    </div>`;
-                }
-                
-                html += `</div></div>`;
-            }
-            
-            if (!html) {
-                html = '<p>No specific changes detected. Skills may have been reorganized or optimized.</p>';
-            }
-            
-            contentDiv.innerHTML = html;
-            summaryDiv.style.display = 'block';
-        }
-
-        function showPDFComparison(beforePDF, afterPDF) {
-            const comparison = document.getElementById('pdfComparison');
-            const beforeEmbed = document.getElementById('beforePDF');
-            const afterEmbed = document.getElementById('afterPDF');
-            
-            beforeEmbed.src = `data:application/pdf;base64,${beforePDF}`;
-            afterEmbed.src = `data:application/pdf;base64,${afterPDF}`;
-            
-            comparison.style.display = 'block';
-        }
-
-        async function resetBaseline() {
-            if (!confirm('Are you sure you want to reset the baseline? This will set the current resume as the new "before" state for all future comparisons.')) {
-                return;
-            }
-
-            try {
-                showStatus('Resetting baseline backup...', 'info');
-                
-                const response = await fetch('/reset-baseline', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        showStatus('✅ Baseline reset successfully! The current resume is now the new baseline.', 'success');
-                    } else {
-                        showStatus(`❌ Error: ${result.error}`, 'error');
-                    }
-                } else {
-                    const error = await response.json();
-                    showStatus(`❌ Error: ${error.error || 'Failed to reset baseline'}`, 'error');
-                }
-            } catch (error) {
-                showStatus(`❌ Network error: ${error.message}`, 'error');
-            }
-        }
-    </script>
-</body>
-</html>
-"""
-
 # Store processing results temporarily
 processing_results = {}
 
@@ -730,7 +36,7 @@ processing_results = {}
 @app.route('/')
 def index():
     """Serve the main web interface"""
-    return render_template_string(HTML_TEMPLATE)
+    return render_template('index.html')
 
 
 @app.route('/process-jd', methods=['POST'])
@@ -785,10 +91,57 @@ def process_job_description():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/generate-summary', methods=['POST'])
+def generate_summary():
+    """Generate professional summary without modifying files"""
+    try:
+        # Run summary-updater.py with --generate-only flag
+        result = subprocess.run([
+            sys.executable, 'summary-updater.py', '--generate-only'
+        ], capture_output=True, text=True, timeout=1800)  # 30 minutes timeout
+
+        if result.returncode != 0:
+            return jsonify({
+                'success': False, 
+                'error': f'Summary generation failed: {result.stderr}'
+            }), 500
+
+        # Extract the summary from stdout (skip the log messages)
+        output_lines = result.stdout.strip().split('\n')
+        # Find the actual summary text (usually the last non-empty line after log messages)
+        summary_text = ""
+        for line in reversed(output_lines):
+            if line.strip() and not line.startswith('🧠') and not line.startswith('✅'):
+                summary_text = line.strip()
+                break
+
+        if not summary_text:
+            # If we can't find clean summary, return the full stdout
+            summary_text = result.stdout.strip()
+
+        return jsonify({
+            'success': True,
+            'summary': summary_text
+        })
+
+    except subprocess.TimeoutExpired:
+        return jsonify({
+            'success': False, 
+            'error': 'Summary generation timed out after 30 minutes'
+        }), 500
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/update-resume', methods=['POST'])
 def update_resume():
-    """Update the resume with extracted skills"""
+    """Update the resume with selected skills and custom summary"""
     try:
+        # Get request data
+        data = request.get_json() or {}
+        selected_skills = data.get('selected_skills', [])
+        professional_summary = data.get('professional_summary', '')
+        
         # Find the most recent JD session
         jd_sessions = [k for k in processing_results.keys()
                        if k.startswith('jd_session_')]
@@ -800,8 +153,43 @@ def update_resume():
             jd_sessions, key=lambda x: processing_results[x].get('temp_dir', ''))
         session_data = processing_results[latest_session]
 
+        # Create a filtered skills file if specific skills were selected
+        if selected_skills:
+            # Load the original skills data
+            artifacts_path = Path('artifacts/jd_skills.json')
+            if artifacts_path.exists():
+                with open(artifacts_path, 'r') as f:
+                    original_skills = json.load(f)
+                
+                # Filter the skills to only include selected ones
+                filtered_skills = {
+                    'skills_flat': selected_skills,
+                    'by_section_top3': {},
+                    'categorized': {},
+                    'job_skills_ranked': []
+                }
+                
+                # Preserve structure for selected skills
+                if 'by_section_top3' in original_skills:
+                    for section, skills in original_skills['by_section_top3'].items():
+                        filtered_section_skills = [s for s in skills if s in selected_skills]
+                        if filtered_section_skills:
+                            filtered_skills['by_section_top3'][section] = filtered_section_skills
+                
+                if 'job_skills_ranked' in original_skills:
+                    filtered_skills['job_skills_ranked'] = [
+                        skill_obj for skill_obj in original_skills['job_skills_ranked'] 
+                        if skill_obj.get('canonical') in selected_skills
+                    ]
+                
+                # Write filtered skills back to artifacts
+                with open(artifacts_path, 'w') as f:
+                    json.dump(filtered_skills, f, indent=2)
+                
+                print(f"✅ Filtered skills to {len(selected_skills)} selected items")
+
         # Run the resume update pipeline
-        result = run_resume_update(session_data['temp_dir'])
+        result = run_resume_update(session_data['temp_dir'], professional_summary)
 
         if result['success']:
             # Generate PDFs for comparison
@@ -832,7 +220,7 @@ def update_resume():
             # Store final result for download
             processing_results[download_id] = {
                 'temp_dir': session_data['temp_dir'],
-                'skills_count': session_data['skills_count'],
+                'skills_count': len(selected_skills) if selected_skills else session_data['skills_count'],
                 'files': result['files'],
                 'before_pdf': before_pdf_b64,
                 'after_pdf': after_pdf_b64
@@ -841,7 +229,7 @@ def update_resume():
             response_data = {
                 'success': True,
                 'download_id': download_id,
-                'skills_count': session_data['skills_count']
+                'skills_count': len(selected_skills) if selected_skills else session_data['skills_count']
             }
 
             # Include PDF data if both are available
@@ -1157,7 +545,44 @@ def parse_skills_changes(temp_dir: str) -> Optional[Dict[str, Any]]:
         return None
 
 
-def run_resume_update(temp_dir: str) -> Dict[str, Any]:
+def update_summary_in_tex_file(summary_text: str) -> bool:
+    """Update the professional summary directly in the resume .tex file"""
+    try:
+        import re
+        from pathlib import Path
+        
+        resume_file = Path('Resume/Conner_Jordan_Software_Engineer.tex')
+        if not resume_file.exists():
+            return False
+        
+        # Read current resume content
+        resume_content = resume_file.read_text()
+        
+        # Pattern to find the summary section
+        SUMMARY_PATTERN = re.compile(
+            r"(% SUMMARY_BLOCK_START\s*\n)(.*?)(\n\s*% SUMMARY_BLOCK_END)",
+            re.DOTALL
+        )
+        
+        if SUMMARY_PATTERN.search(resume_content):
+            # Replace the content of the summary block
+            updated_content = SUMMARY_PATTERN.sub(
+                f"\\1{summary_text.strip()}\\3", 
+                resume_content, 
+                count=1
+            )
+            resume_file.write_text(updated_content)
+            return True
+        else:
+            print("Warning: Could not find summary block markers in resume file")
+            return False
+            
+    except Exception as e:
+        print(f"Error updating summary in tex file: {e}")
+        return False
+
+
+def run_resume_update(temp_dir: str, custom_summary: str = None) -> Dict[str, Any]:
     """Run only the resume update part of the pipeline"""
     try:
         print("🔧 Running skills-updater.py...")
@@ -1181,25 +606,37 @@ def run_resume_update(temp_dir: str) -> Dict[str, Any]:
 
         print("✅ Skills updater completed successfully")
 
-        # Step 2: Use subprocess to run summary-updater
-        print("🔧 Running summary-updater.py...")
-        summary_result = subprocess.run([
-            sys.executable, 'summary-updater.py'
-        ], capture_output=True, text=True, timeout=300)
+        # Step 2: Handle summary update
+        if custom_summary:
+            # Use the provided custom summary directly
+            print("📝 Using custom professional summary...")
+            success = update_summary_in_tex_file(custom_summary)
+            if not success:
+                return {
+                    'success': False,
+                    'error': 'Failed to update custom summary in resume file'
+                }
+            print("✅ Custom summary updated successfully")
+        else:
+            # Use subprocess to run summary-updater
+            print("🔧 Running summary-updater.py...")
+            summary_result = subprocess.run([
+                sys.executable, 'summary-updater.py'
+            ], capture_output=True, text=True, timeout=300)
 
-        print(f"Summary-updater exit code: {summary_result.returncode}")
-        if summary_result.stdout:
-            print(f"Summary-updater stdout: {summary_result.stdout}")
-        if summary_result.stderr:
-            print(f"Summary-updater stderr: {summary_result.stderr}")
+            print(f"Summary-updater exit code: {summary_result.returncode}")
+            if summary_result.stdout:
+                print(f"Summary-updater stdout: {summary_result.stdout}")
+            if summary_result.stderr:
+                print(f"Summary-updater stderr: {summary_result.stderr}")
 
-        if summary_result.returncode != 0:
-            return {
-                'success': False,
-                'error': f'Summary updater failed with exit code {summary_result.returncode}: {summary_result.stderr}'
-            }
+            if summary_result.returncode != 0:
+                return {
+                    'success': False,
+                    'error': f'Summary updater failed with exit code {summary_result.returncode}: {summary_result.stderr}'
+                }
 
-        print("✅ Summary updater completed successfully")
+            print("✅ Summary updater completed successfully")
 
         # Check if the required artifacts were created
         artifacts_dir = Path('artifacts')
@@ -1214,7 +651,8 @@ def run_resume_update(temp_dir: str) -> Dict[str, Any]:
                 'error': 'Skills updater did not generate required artifacts'
             }
 
-        if not summary_updated_block.exists():
+        # Only check for summary artifacts if we didn't use a custom summary
+        if not custom_summary and not summary_updated_block.exists():
             return {
                 'success': False,
                 'error': 'Summary updater did not generate required artifacts'
@@ -1223,17 +661,24 @@ def run_resume_update(temp_dir: str) -> Dict[str, Any]:
         # Parse changes from skills and summary editor outputs
         changes = parse_all_changes(temp_dir)
 
+        files_list = [
+            'artifacts/jd_skills.json',
+            'artifacts/skills_updated_block.tex',
+            'artifacts/skills_editor_output.json',
+            'skills.tex',
+            'Resume/Conner_Jordan_Software_Engineer.tex'
+        ]
+        
+        # Only include summary artifacts if we used the automatic summary updater
+        if not custom_summary:
+            files_list.extend([
+                'artifacts/summary_updated_block.tex',
+                'artifacts/summary_editor_output.json'
+            ])
+        
         result_data = {
             'success': True,
-            'files': [
-                'artifacts/jd_skills.json',
-                'artifacts/skills_updated_block.tex',
-                'artifacts/skills_editor_output.json',
-                'artifacts/summary_updated_block.tex',
-                'artifacts/summary_editor_output.json',
-                'skills.tex',
-                'Resume/Conner_Jordan_Software_Engineer.tex'
-            ]
+            'files': files_list
         }
 
         if changes:

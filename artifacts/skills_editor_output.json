@@ -1,14 +1,30 @@
 {
-  "latex": "\\textbf{Programming Languages:} Java, Python, SQL, Swift, TypeScript, C/C++, Bash, PowerShell\\n\\vspace{3pt}\\n\\textbf{Frontend:} React.js, Vite, Vue.js, Tailwind CSS, Next.js, MUI\\n\\vspace{3pt}\\n\\textbf{Backend:} RESTful \\& GraphQL API Development, FastAPI, Flask, Express.js, .NET, Node.js, Spring Boot, Django\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} Ansible, Google Cloud Platform (GCP), AWS, Terraform, Docker, Kubernetes, Lambda, CI/CD (GitHub Actions, Jenkins), Azure\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} LM Studio, Ollama, Claude Code, Vector Databases (Chroma, Pinecone), LangChain, MLX\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} Crontab, GitHub Copilot, Raycast, Git, Postman, PowerToys, Shell Scripting, Selenium\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} OWASP Top 10, Application Security (AppSec), Identity Systems, Web Security Testing (Burp Suite, OWASP Juice Shop), Vulnerability Management, Encryption, BigFix, IAM, Incident Response, SABSA, Azure Security, API Security, TOGAF, GIAC, Authorization (authZ), Jamf, SAST (Static Application Security Testing), Penetration Testing, Rapid7, CrowdStrike, SOX, Secure Systems, AWS Security, CCSP, ServiceNow, Authentication (authN), CISSP-ISSAP\\n\\vspace{3pt}\\n\\textbf{Databases:} PostgreSQL, MongoDB, Databricks, Snowflake, MySQL, DynamoDB",
+  "latex": "\\textbf{Programming Languages:} TypeScript, Jupyter, Python, PowerShell, Java, Swift, Bash, C/C++, SQL\\n\\vspace{3pt}\\n\\textbf{Frontend:} Vue.js, React.js, MUI, Vite, Tailwind CSS, Next.js\\n\\vspace{3pt}\\n\\textbf{Backend:} Django, Express.js, Node.js, Spring Boot, FastAPI, Flask, RESTful \\& GraphQL API Development, .NET\\n\\vspace{3pt}\\n\\textbf{Cloud \\& DevOps:} Data Pipelines, Azure, Docker, AWS, Terraform, CI/CD (GitHub Actions, Jenkins), Cloud Infrastructure, Kubernetes, Lambda, Ansible, Google Cloud Platform (GCP)\\n\\vspace{3pt}\\n\\textbf{AI \\& LLM Tools:} Ollama, Vector Databases (Chroma, Pinecone), LM Studio, LangChain, MLX, Claude Code, ML/AI Models\\n\\vspace{3pt}\\n\\textbf{Automation \\& Productivity:} PowerToys, Shell Scripting, Git, Selenium, Command-Line Scripts/Utilities, Raycast, Postman, GitHub Copilot, Crontab\\n\\vspace{3pt}\\n\\textbf{Security \\& Operating Systems:} Penetration Testing, ServiceNow, Application Security (AppSec), SABSA, Identity Systems, GIAC, Incident Response, CrowdStrike, AWS Security Services, Vulnerability Management, Authentication (authN), Encryption, Rapid7, Secure Systems, OWASP Top 10, TOGAF, CISSP-ISSAP, Azure Security, Jamf, SAST (Static Application Security Testing), Authorization (authZ), BigFix, API Security, SIEM, IAM, SOX, CCSP, Web Security Testing (Burp Suite, OWASP Juice Shop)\\n\\vspace{3pt}\\n\\textbf{Databases:} MySQL, Snowflake, Apache Kafka, MongoDB, DynamoDB, Databricks, PostgreSQL",
   "change_notes": [
     {
-      "section": "Security \\& Operating Systems",
+      "section": "Programming Languages",
       "added": [
-        "Secure Systems",
-        "AWS Security",
-        "Azure Security",
-        "GIAC",
-        "CCSP"
+        "Python"
+      ],
+      "removed": []
+    },
+    {
+      "section": "Backend",
+      "added": [],
+      "removed": []
+    },
+    {
+      "section": "Cloud \\& DevOps",
+      "added": [
+        "Data Pipelines",
+        "Cloud Infrastructure"
+      ],
+      "removed": []
+    },
+    {
+      "section": "AI \\& LLM Tools",
+      "added": [
+        "ML/AI Models"
       ],
       "removed": []
     }
